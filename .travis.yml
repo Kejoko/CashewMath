@@ -6,6 +6,8 @@ sudo: false
 
 compiler:
   - clang
+  - gcc
+  - msvc
 
 script:
   - mkdir build
