@@ -29,7 +29,6 @@ target_include_directories(CashewMath INTERFACE $<BUILD_INTERFACE:${CMAKE_CURREN
 # ================================================================================
 # Testing
 # ================================================================================
-include(CTest)
 enable_testing()
 
 add_subdirectory(test/)
