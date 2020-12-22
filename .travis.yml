@@ -1,0 +1,5 @@
+# CashewMath
+# Keegan Kochis
+
+language: c++
+sudo: false
