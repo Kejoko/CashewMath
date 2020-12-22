@@ -1,0 +1,20 @@
+# CashewMath
+# Keegan Kochis
+
+language: c++
+sudo: false
+
+compiler:
+  - clang
+  - gcc
+
+os:
+  - osx
+  - linux
+
+script:
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - ctest
