@@ -23,7 +23,7 @@ set(linear_headers
   ${CMAKE_CURRENT_SOURCE_DIR}/include/linear/Linear.h)
 
 add_library(CashewMath INTERFACE)
-target_sources(CashewMath INTERFACE "$<BUILD_INTERFACE:${cm_master_header};{linear_headers}>")
+target_sources(CashewMath INTERFACE "$<BUILD_INTERFACE:${cm_master_header};${linear_headers}>")
 target_include_directories(CashewMath INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
 # ================================================================================
