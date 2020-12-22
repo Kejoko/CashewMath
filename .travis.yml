@@ -9,6 +9,11 @@ compiler:
   - gcc
   - msvc
 
+os:
+  - osx
+  - linux
+  - windows
+
 script:
   - mkdir build
   - cd build
