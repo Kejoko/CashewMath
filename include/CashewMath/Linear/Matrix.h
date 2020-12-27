@@ -1,7 +1,11 @@
-
+// Keegan Kochis
+// 2020 December 26th
 
 #ifndef MATRIX_H_INCLUDE
 #define MATRIX_H_INCLUDE
+
+#include <ostream>
+#include <vector>
 
 namespace Cashew {
 
@@ -10,6 +14,7 @@ namespace Cashew {
       public:
         
         Matrix(int rows, int cols);
+        ~Matrix() = default;
         
         void clear();
         
@@ -23,16 +28,33 @@ namespace Cashew {
         
         int mRows;
         int mCols;
-        
-        T** mData;
+        std::vector<std::vector<T>> mData;
         
     };
 
+    //
+    // Member functions
+    //
+
     template <class T>
     Matrix<T>::Matrix(int rows, int cols) {
+        mRows = rows;
+        mCols = cols;
         
+        mData.resize(mRows);
+        for (int i = 0; i < mRows; i++) {
+            mData[i].resize(mCols);
+        }
     }
 
+    //
+    // Operator overloads
+    //
+
+    template <class T>
+    std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat) {
+        
+    }
 }
 
 
