@@ -24,6 +24,14 @@ set(linear_headers
   ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Linear/Matrix.h
   ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Linear/Vector.h)
 
+set(random_headers
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Random.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Random/Generator.h)
+
+set(util_headers
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Util.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Util/uint128_t.h)
+
 add_library(CashewMath INTERFACE)
 target_sources(CashewMath INTERFACE "$<BUILD_INTERFACE:${cm_master_header};${linear_headers}>")
 target_include_directories(CashewMath INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
