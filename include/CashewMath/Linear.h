@@ -1,6 +1,6 @@
 #ifndef LINEAR_H_INCLUDE
 #define LINEAR_H_INCLUDE
 
-#include "Matrix.h"
+#include "Linear/Matrix.h"
 
 #endif //LINEAR_H_INCLUDE
