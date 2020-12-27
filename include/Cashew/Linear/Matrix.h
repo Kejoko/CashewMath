@@ -1,11 +1,12 @@
 // Keegan Kochis
 // 2020 December 26th
 
-#ifndef MATRIX_H_INCLUDE
-#define MATRIX_H_INCLUDE
+#ifndef CASHEW_MATRIX_H_INCLUDE
+#define CASHEW_MATRIX_H_INCLUDE
 
 #include <ostream>
-#include <vector>
+
+#include "Cashew/Linear/Vector.h"
 
 namespace Cashew {
 
@@ -28,7 +29,7 @@ namespace Cashew {
         
         int mRows;
         int mCols;
-        std::vector<std::vector<T>> mData;
+        //std::vector<std::vector<T>> mData;
         
     };
 
@@ -41,21 +42,17 @@ namespace Cashew {
         mRows = rows;
         mCols = cols;
         
-        mData.resize(mRows);
-        for (int i = 0; i < mRows; i++) {
-            mData[i].resize(mCols);
-        }
     }
 
     //
     // Operator overloads
     //
 
-    template <class T>
-    std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat) {
-        
-    }
+//    template <class T>
+//    std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat) {
+//
+//    }
 }
 
 
-#endif //MATRIX_H_INCLUDE
+#endif // CASHEW_MATRIX_H_INCLUDE

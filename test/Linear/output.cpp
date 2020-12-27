@@ -1,6 +1,4 @@
-
-
-#include "CashewMath/CashewMath.h"
+#include "Cashew/Math.h"
 
 int main() {
     return 0;

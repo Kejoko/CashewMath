@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "CashewMath/Linear.h"
+#include "Cashew/Linear.h"
 
 int main() {
     
