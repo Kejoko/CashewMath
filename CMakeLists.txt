@@ -17,13 +17,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Create interface library
 # ================================================================================
 set(cm_master_header
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/CashewMath.h)
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Math.h)
 
 set(linear_headers
-  ${CMAKE_CURRENT_SOURCE_DIR}/include/linear/Linear.h)
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Linear.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Linear/Matrix.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/Cashew/Linear/Vector.h)
 
 add_library(CashewMath INTERFACE)
-target_sources(CashewMath INTERFACE "$<BUILD_INTERFACE:${cm_master_header};{linear_headers}>")
+target_sources(CashewMath INTERFACE "$<BUILD_INTERFACE:${cm_master_header};${linear_headers}>")
 target_include_directories(CashewMath INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
 # ================================================================================
