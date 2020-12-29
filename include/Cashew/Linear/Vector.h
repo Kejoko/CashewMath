@@ -18,6 +18,7 @@ namespace Cashew {
         int size() { return mSize; }
     
         void fill(T value);
+        void clear();
 
         T& operator[](int i);
     
@@ -59,7 +60,7 @@ namespace Cashew {
     template<class T>
     T& Vector<T>::operator[](int i) {
         if (i < 0 || i >= mSize) {
-            throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
+            throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds for Cashew::Vector of size " + std::to_string(mSize) + ".");
         }
         
         return mData[i];
