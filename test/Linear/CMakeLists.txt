@@ -7,8 +7,8 @@ add_test(NAME memory_test COMMAND memory)
 
 
 # =====
-# Output
+# Getter/Setter/Output
 # =====
-add_executable(output output.cpp)
-target_link_libraries(output CashewMath)
-add_test(NAME output_test COMMAND output)
+add_executable(get_set_output get_set_output.cpp)
+target_link_libraries(get_set_output CashewMath)
+add_test(NAME get_set_output_test COMMAND get_set_output)
