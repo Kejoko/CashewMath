@@ -21,13 +21,14 @@ namespace Cashew {
         Matrix(int rows, int cols);
         Matrix(int rows, int cols, T value);
 
-        int rows() { return mRows; }
-        int cols() { return mCols; }
-        int size() { return mRows * mCols; }
+        int rows() const { return mRows; }
+        int cols() const { return mCols; }
+        int size() const { return mRows * mCols; }
         
         void fill(T value);
         void clear();
 
+        Cashew::Vector<T> operator[](int i) const;
         Cashew::Vector<T>& operator[](int i);
         
       private:
@@ -73,6 +74,15 @@ namespace Cashew {
     //
 
     template<class T>
+    Cashew::Vector<T> Matrix<T>::operator[](int r) const {
+        if (r < 0 || r >= mRows) {
+            throw std::out_of_range("Row " + std::to_string(r) + " is out of bounds for Cashew::Matrix with " + std::to_string(mRows) + " rows.");
+        }
+        
+        return mData[r];
+    }
+
+    template<class T>
     Cashew::Vector<T>& Matrix<T>::operator[](int r) {
         if (r < 0 || r >= mRows) {
             throw std::out_of_range("Row " + std::to_string(r) + " is out of bounds for Cashew::Matrix with " + std::to_string(mRows) + " rows.");
@@ -82,14 +92,14 @@ namespace Cashew {
     }
 
     template<class T>
-    std::ostream& operator<<(std::ostream& os, Matrix<T>& mat) {
+    std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat) {
         for (int r = 0; r < mat.rows(); r++) {
             os << mat[r] << '\n';
         }
         return os;
     }
 
-    std::ostream& operator<<(std::ostream& os, Matrix<double>& mat) {
+    std::ostream& operator<<(std::ostream& os, const Matrix<double>& mat) {
         std::vector<int> widths(mat.cols());
         for (int c = 0; c < mat.cols(); c++) {
             int maxDigits = 0;
@@ -139,7 +149,7 @@ namespace Cashew {
         return os;
     }
 
-    std::ostream& operator<<(std::ostream& os, Matrix<int>& mat) {
+    std::ostream& operator<<(std::ostream& os, const Matrix<int>& mat) {
         std::vector<int> widths(mat.cols());
         for (int c = 0; c < mat.cols(); c++) {
             int maxDigits = 0;
