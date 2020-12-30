@@ -83,12 +83,13 @@ namespace Cashew {
 
     template<class T>
     std::ostream& operator<<(std::ostream& os, Matrix<T>& mat) {
+        for (int r = 0; r < mat.rows(); r++) {
+            os << mat[r] << '\n';
+        }
         return os;
     }
 
     std::ostream& operator<<(std::ostream& os, Matrix<double>& mat) {
-        // Determine widths of each column by extracting the number
-        // of digits in each value
         std::vector<int> widths(mat.cols());
         for (int c = 0; c < mat.cols(); c++) {
             int maxDigits = 0;
@@ -113,7 +114,6 @@ namespace Cashew {
             widths[c] = maxDigits;
         }
         
-        // Print each row of the matrix
         int precision = 4;
         for (int r = 0; r < mat.rows(); r++) {
             os << '|';
@@ -123,6 +123,53 @@ namespace Cashew {
                    << std::setfill(' ')
                    << std::setprecision(precision)
                    << std::fixed
+                   << mat[r][c];
+                
+                if (c < mat.cols() - 1) {
+                    os << "  ";
+                }
+            }
+            os << '|';
+            
+            if (r < mat.rows()-1) {
+                os << '\n';
+            }
+        }
+        
+        return os;
+    }
+
+    std::ostream& operator<<(std::ostream& os, Matrix<int>& mat) {
+        std::vector<int> widths(mat.cols());
+        for (int c = 0; c < mat.cols(); c++) {
+            int maxDigits = 0;
+            for (int r = 0; r < mat.rows(); r++) {
+                double dVal = mat[r][c] + 0.5 - (mat[r][c] < 0);
+                int iVal = std::abs((int)dVal);
+                int digits = 0;
+                
+                while (iVal != 0) {
+                    iVal /= 10;
+                    digits++;
+                }
+                
+                if (mat[r][c] < 0) {
+                    digits++;
+                }
+                
+                if (digits > maxDigits) {
+                    maxDigits = digits;
+                }
+            }
+            widths[c] = maxDigits;
+        }
+        
+        for (int r = 0; r < mat.rows(); r++) {
+            os << '|';
+            for (int c = 0; c < mat.cols(); c++) {
+                os << std::setw(widths[c] + 1)
+                   << std::right
+                   << std::setfill(' ')
                    << mat[r][c];
                 
                 if (c < mat.cols() - 1) {
