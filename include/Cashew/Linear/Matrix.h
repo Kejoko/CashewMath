@@ -8,7 +8,6 @@
 
 #include <iomanip>
 #include <ostream>
-#include <sstream>
 #include <vector>
 
 #include "Cashew/Linear/Vector.h"
