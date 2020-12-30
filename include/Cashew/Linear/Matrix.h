@@ -17,7 +17,6 @@ namespace Cashew {
     template<class T>
     class Matrix {
       public:
-
         Matrix(int rows, int cols);
         Matrix(int rows, int cols, T value);
 
@@ -31,12 +30,13 @@ namespace Cashew {
         Cashew::Vector<T> operator[](int i) const;
         Cashew::Vector<T>& operator[](int i);
         
-      private:
+        bool operator==(const Matrix<T>& other) const;
+        bool operator!=(const Matrix<T>& other) const;
         
+      private:
         int mRows;
         int mCols;
         std::vector<Cashew::Vector<T>> mData;
-        
     };
 
     //
@@ -89,6 +89,28 @@ namespace Cashew {
         }
         
         return mData[r];
+    }
+
+    template<class T>
+    bool Matrix<T>::operator==(const Matrix<T>& other) const {
+        if (mRows != other.rows() || mCols != other.cols()) {
+            throw std::domain_error("Comparison invalid for Cashew::Matrix of size " + std::to_string(mRows) + ',' + std::to_string(mCols) + " and Cashew::Matrix of size " + std::to_string(other.rows()) + ',' + std::to_string(other.cols()) + '.');
+        }
+        
+        for (int r = 0; r < mRows; r++) {
+            for (int c = 0; c < mCols; c++) {
+                if (mData[r][c] != other[r][c]) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    template<class T>
+    bool Matrix<T>::operator!=(const Matrix<T>& other) const {
+        return !(*this == other);
     }
 
     template<class T>

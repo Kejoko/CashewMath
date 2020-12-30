@@ -22,11 +22,13 @@ namespace Cashew {
 
         T operator[](int i) const;
         T& operator[](int i);
+        
+        bool operator==(const Vector<T>& other) const;
+        bool operator!=(const Vector<T>& other) const;
     
       private:
         int mSize;
         std::vector<T> mData;
-    
     };
 
     //
@@ -35,12 +37,20 @@ namespace Cashew {
 
     template<class T>
     Vector<T>::Vector(int size) {
+        if (size == 0) {
+            throw std::domain_error("Cannot create a Cashew::Vector of size 0.");
+        }
+        
         mSize = size;
         mData.resize(mSize);
     }
 
     template<class T>
     Vector<T>::Vector(int size, T value) {
+        if (size == 0) {
+            throw std::domain_error("Cannot create a Cashew::Vector of size 0.");
+        }
+        
         mSize = size;
         mData.resize(mSize);
     
@@ -74,6 +84,26 @@ namespace Cashew {
         }
         
         return mData[i];
+    }
+
+    template<class T>
+    bool Vector<T>::operator==(const Vector<T>& other) const {
+        if (mSize != other.size()) {
+            throw std::domain_error("Comparison invalid for Cashew::Vector of size " + std::to_string(mSize) + " and Cashew::Vector of size " + std::to_string(other.size()) + '.');
+        }
+        
+        for (int i = 0; i < mSize; i++) {
+            if (mData[i] != other[i]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    template<class T>
+    bool Vector<T>::operator!=(const Vector<T>& other) const {
+        return !(*this == other);
     }
 
     template<class T>
