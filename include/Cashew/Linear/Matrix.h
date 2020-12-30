@@ -30,13 +30,12 @@ namespace Cashew {
         Cashew::Vector<T> operator[](int i) const;
         Cashew::Vector<T>& operator[](int i);
         
-        bool operator==(const Matrix<T>& other) const;
-        bool operator!=(const Matrix<T>& other) const;
-        
       private:
         int mRows;
         int mCols;
         std::vector<Cashew::Vector<T>> mData;
+        
+        void validateRow(int r) const;
     };
 
     //
@@ -69,37 +68,52 @@ namespace Cashew {
         }
     }
 
+    template<class T>
+    void Matrix<T>::validateRow(int r) const {
+        if (r < 0 || r >= mRows) {
+            throw std::out_of_range("Row " + std::to_string(r) +
+                                    " is out of bounds for Cashew::Matrix with " +
+                                    std::to_string(mRows) + " rows.");
+        }
+    }
+
     //
     // Operator overloads
     //
 
     template<class T>
     Cashew::Vector<T> Matrix<T>::operator[](int r) const {
-        if (r < 0 || r >= mRows) {
-            throw std::out_of_range("Row " + std::to_string(r) + " is out of bounds for Cashew::Matrix with " + std::to_string(mRows) + " rows.");
-        }
+        validateRow(r);
         
         return mData[r];
     }
 
     template<class T>
     Cashew::Vector<T>& Matrix<T>::operator[](int r) {
-        if (r < 0 || r >= mRows) {
-            throw std::out_of_range("Row " + std::to_string(r) + " is out of bounds for Cashew::Matrix with " + std::to_string(mRows) + " rows.");
-        }
+        validateRow(r);
         
         return mData[r];
     }
 
     template<class T>
-    bool Matrix<T>::operator==(const Matrix<T>& other) const {
-        if (mRows != other.rows() || mCols != other.cols()) {
-            throw std::domain_error("Comparison invalid for Cashew::Matrix of size " + std::to_string(mRows) + ',' + std::to_string(mCols) + " and Cashew::Matrix of size " + std::to_string(other.rows()) + ',' + std::to_string(other.cols()) + '.');
+    void validateDimensions(const Matrix<T>& matA, const Matrix<T>& matB) {
+        if (matA.rows() != matB.rows() || matA.cols() != matB.cols()) {
+            throw std::domain_error("Comparison invalid for Cashew::Matrix of size " +
+                                    std::to_string(matA.rows()) + ',' +
+                                    std::to_string(matA.cols()) +
+                                    " and Cashew::Matrix of size " +
+                                    std::to_string(matB.rows()) + ',' +
+                                    std::to_string(matB.cols()) + '.');
         }
+    }
+
+    template<class T>
+    bool operator==(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        validateDimensions(lhs, rhs);
         
-        for (int r = 0; r < mRows; r++) {
-            for (int c = 0; c < mCols; c++) {
-                if (mData[r][c] != other[r][c]) {
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                if (lhs[r][c] != rhs[r][c]) {
                     return false;
                 }
             }
@@ -109,8 +123,72 @@ namespace Cashew {
     }
 
     template<class T>
-    bool Matrix<T>::operator!=(const Matrix<T>& other) const {
-        return !(*this == other);
+    bool operator!=(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        return !(lhs == rhs);
+    }
+
+    template<class T>
+    Matrix<T> operator+(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        validateDimensions(lhs, rhs);
+        
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] + rhs[r][c];
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator-(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        validateDimensions(lhs, rhs);
+        
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] - rhs[r][c];
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator*(const Matrix<T>& lhs, double scalar) {
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] * scalar;
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator*(double scalar, const Matrix<T>& rhs) {
+        return rhs * scalar;
+    }
+
+    template<class T>
+    Matrix<T> operator/(const Matrix<T>& lhs, double scalar) {
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] / scalar;
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator/(double scalar, const Matrix<T>& rhs) {
+        return rhs / scalar;
     }
 
     template<class T>

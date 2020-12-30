@@ -53,5 +53,6 @@ int main() {
     success = testDivision();
     if (success != 0) return success;
     
+    std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";
     return 0;
 }
