@@ -4,7 +4,11 @@
 #ifndef CASHEW_MATRIX_H_INCLUDE
 #define CASHEW_MATRIX_H_INCLUDE
 
+#include <stdlib.h>
+
+#include <iomanip>
 #include <ostream>
+#include <sstream>
 #include <vector>
 
 #include "Cashew/Linear/Vector.h"
@@ -79,9 +83,59 @@ namespace Cashew {
     }
 
     template<class T>
-    std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat) {
+    std::ostream& operator<<(std::ostream& os, Matrix<T>& mat) {
+        return os;
+    }
+
+    std::ostream& operator<<(std::ostream& os, Matrix<double>& mat) {
+        // Determine widths of each column by extracting the number
+        // of digits in each value
+        std::vector<int> widths(mat.cols());
+        for (int c = 0; c < mat.cols(); c++) {
+            int maxDigits = 0;
+            for (int r = 0; r < mat.rows(); r++) {
+                double dVal = mat[r][c] + 0.5 - (mat[r][c] < 0);
+                int iVal = std::abs((int)dVal);
+                int digits = 0;
+                
+                while (iVal != 0) {
+                    iVal /= 10;
+                    digits++;
+                }
+                
+                if (mat[r][c] < 0) {
+                    digits++;
+                }
+                
+                if (digits > maxDigits) {
+                    maxDigits = digits;
+                }
+            }
+            widths[c] = maxDigits;
+        }
         
-        // Need [] overloaded to access vectors
+        // Print each row of the matrix
+        int precision = 4;
+        for (int r = 0; r < mat.rows(); r++) {
+            os << '|';
+            for (int c = 0; c < mat.cols(); c++) {
+                os << std::setw(widths[c] + precision + 1)
+                   << std::right
+                   << std::setfill(' ')
+                   << std::setprecision(precision)
+                   << std::fixed
+                   << mat[r][c];
+                
+                if (c < mat.cols() - 1) {
+                    os << "  ";
+                }
+            }
+            os << '|';
+            
+            if (r < mat.rows()-1) {
+                os << '\n';
+            }
+        }
         
         return os;
     }

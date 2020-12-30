@@ -145,6 +145,8 @@ int main() {
     success = testVecAccess(vec);
     if (success != 0) return success;
     
+    std::cout << vec << "\n\n";
+    
     // Matrix
     Cashew::Matrix<double> mat(4,3);
     std::cout << "Matrix dimensions " << mat.rows() << 'x' << mat.cols() << '\n';
@@ -155,6 +157,9 @@ int main() {
     success = testMatAccess(mat);
     if (success != 0) return success;
     
+    std::cout << mat << "\n\n";
+    
+    // Success
     std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";
     return 0;
 }

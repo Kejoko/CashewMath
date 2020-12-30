@@ -67,10 +67,18 @@ namespace Cashew {
     }
 
     template<class T>
-    std::ostream& operator<<(std::ostream& os, const Vector<T>& vec) {
+    std::ostream& operator<<(std::ostream& os, Vector<T>& vec) {
         int width, precision, pad;
     
-        // Need [] overloaded to access elements
+        os << '|';
+        for (int i = 0; i < vec.size(); i++) {
+            os << vec[i];
+            
+            if (i < vec.size()-1) {
+                os << "  ";
+            }
+        }
+        os << '|';
     
         return os;
     }
