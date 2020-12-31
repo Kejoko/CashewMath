@@ -10,6 +10,7 @@ sudo: false
 compiler:
   - clang
   - gcc
+  - msvc
 
 os:
   - linux
