@@ -1,6 +1,9 @@
 # CashewMath
 # Keegan Kochis
 
+notifications:
+  email: false
+
 language: c++
 sudo: false
 
