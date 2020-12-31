@@ -9,7 +9,6 @@ compiler:
   - gcc
 
 os:
-  - osx
   - linux
 
 script:
