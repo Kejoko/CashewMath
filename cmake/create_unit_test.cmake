@@ -1,0 +1,5 @@
+function(create_unit_test NAME_arg SOURCE_arg)
+  add_executable(${NAME_arg} ${SOURCE_arg})
+  target_link_libraries(${NAME_arg} CashewMath)
+  add_test(NAME "${NAME_arg}_test" COMMAND ${NAME_arg})
+endfunction()

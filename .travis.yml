@@ -1,15 +1,18 @@
 # CashewMath
 # Keegan Kochis
 
+notifications:
+  email: false
+
 language: c++
 sudo: false
 
 compiler:
   - clang
   - gcc
+  - msvc
 
 os:
-  - osx
   - linux
 
 script:
