@@ -8,6 +8,12 @@ project(CashewMath LANGUAGES CXX
 cmake_minimum_required(VERSION 3.11)
 
 # ================================================================================
+# CMake modules
+# ================================================================================
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(create_unit_test)
+
+# ================================================================================
 # C++ 11 support
 # ================================================================================
 set(CMAKE_CXX_STANDARD 11)
