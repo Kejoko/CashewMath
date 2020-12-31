@@ -104,7 +104,7 @@ int testMatMutate(Cashew::Matrix<double>& mat) {
     mat[0][0] = 42;
     
     std::cout << "Modifying element " << mat.rows()-1 << ',' << mat.cols()-1 << '\n';
-    mat[mat.rows()-1][mat.cols()-1] = -6.9;
+    mat[mat.rows()-1][mat.cols()-1] = -69.039400;
     
     try {
         std::cout << "Modifying element " << mat.rows() << ',' << mat.cols() << '\n';

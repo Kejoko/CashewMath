@@ -8,6 +8,7 @@
 
 #include <iomanip>
 #include <ostream>
+#include <type_traits>
 #include <vector>
 
 #include "Cashew/Linear/Vector.h"
@@ -29,6 +30,8 @@ namespace Cashew {
 
         Cashew::Vector<T> operator[](int i) const;
         Cashew::Vector<T>& operator[](int i);
+        
+        operator Matrix<double>() const;
         
       private:
         int mRows;
@@ -93,6 +96,18 @@ namespace Cashew {
         validateRow(r);
         
         return mData[r];
+    }
+
+//    template<class T, std::enable_if<std::is_same<int>::value>::type>
+    template<>
+    Matrix<int>::operator Matrix<double>() const {
+        Matrix<double> dMat(mRows, mCols);
+        for (int r = 0; r < mRows; r++) {
+            for (int c = 0; c < mCols; c++) {
+                dMat[r][c] = (double)mData[r][c];
+            }
+        }
+        return dMat;
     }
 
     template<class T>
@@ -199,62 +214,7 @@ namespace Cashew {
         return os;
     }
 
-std::vector<int> getColWidths(const Matrix<double>& mat) {
-    std::vector<int> widths(mat.cols());
-    for (int c = 0; c < mat.cols(); c++) {
-        int maxDigits = 0;
-        for (int r = 0; r < mat.rows(); r++) {
-            double dVal = mat[r][c] + 0.5 - (mat[r][c] < 0);
-            int iVal = std::abs((int)dVal);
-            int digits = 0;
-            
-            while (iVal != 0) {
-                iVal /= 10;
-                digits++;
-            }
-            
-            if (mat[r][c] < 0) {
-                digits++;
-            }
-            
-            if (digits > maxDigits) {
-                maxDigits = digits;
-            }
-        }
-        widths[c] = maxDigits;
-    }
-    return widths;
-}
-
-    std::ostream& operator<<(std::ostream& os, const Matrix<double>& mat) {
-        std::vector<int> widths = getColWidths(mat);
-        
-        int precision = 4;
-        for (int r = 0; r < mat.rows(); r++) {
-            os << '|';
-            for (int c = 0; c < mat.cols(); c++) {
-                os << std::setw(widths[c] + precision + 1)
-                   << std::right
-                   << std::setfill(' ')
-                   << std::setprecision(precision)
-                   << std::fixed
-                   << mat[r][c];
-                
-                if (c < mat.cols() - 1) {
-                    os << "  ";
-                }
-            }
-            os << '|';
-            
-            if (r < mat.rows()-1) {
-                os << '\n';
-            }
-        }
-        
-        return os;
-    }
-
-    std::ostream& operator<<(std::ostream& os, const Matrix<int>& mat) {
+    std::vector<int> getColWidths(const Matrix<double>& mat) {
         std::vector<int> widths(mat.cols());
         for (int c = 0; c < mat.cols(); c++) {
             int maxDigits = 0;
@@ -278,13 +238,19 @@ std::vector<int> getColWidths(const Matrix<double>& mat) {
             }
             widths[c] = maxDigits;
         }
-        
+        return widths;
+    }
+
+    template<class T>
+    void printNumericMatrix(std::ostream& os, const Matrix<T>& mat, const std::vector<int>& widths, int precision) {
         for (int r = 0; r < mat.rows(); r++) {
             os << '|';
             for (int c = 0; c < mat.cols(); c++) {
-                os << std::setw(widths[c] + 1)
+                os << std::setw(widths[c] + precision + 1)
                    << std::right
                    << std::setfill(' ')
+                   << std::setprecision(precision)
+                   << std::fixed
                    << mat[r][c];
                 
                 if (c < mat.cols() - 1) {
@@ -297,7 +263,22 @@ std::vector<int> getColWidths(const Matrix<double>& mat) {
                 os << '\n';
             }
         }
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Matrix<double>& mat) {
+        std::vector<int> widths = getColWidths(mat);
         
+        int decimalPlaces = 4;
+        printNumericMatrix(os, mat, widths, decimalPlaces);
+        
+        return os;
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Matrix<int>& mat) {
+        std::vector<int> widths = getColWidths(mat);
+
+        printNumericMatrix(os, mat, widths, -1);
+
         return os;
     }
 
