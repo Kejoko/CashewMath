@@ -199,30 +199,35 @@ namespace Cashew {
         return os;
     }
 
-    std::ostream& operator<<(std::ostream& os, const Matrix<double>& mat) {
-        std::vector<int> widths(mat.cols());
-        for (int c = 0; c < mat.cols(); c++) {
-            int maxDigits = 0;
-            for (int r = 0; r < mat.rows(); r++) {
-                double dVal = mat[r][c] + 0.5 - (mat[r][c] < 0);
-                int iVal = std::abs((int)dVal);
-                int digits = 0;
-                
-                while (iVal != 0) {
-                    iVal /= 10;
-                    digits++;
-                }
-                
-                if (mat[r][c] < 0) {
-                    digits++;
-                }
-                
-                if (digits > maxDigits) {
-                    maxDigits = digits;
-                }
+std::vector<int> getColWidths(const Matrix<double>& mat) {
+    std::vector<int> widths(mat.cols());
+    for (int c = 0; c < mat.cols(); c++) {
+        int maxDigits = 0;
+        for (int r = 0; r < mat.rows(); r++) {
+            double dVal = mat[r][c] + 0.5 - (mat[r][c] < 0);
+            int iVal = std::abs((int)dVal);
+            int digits = 0;
+            
+            while (iVal != 0) {
+                iVal /= 10;
+                digits++;
             }
-            widths[c] = maxDigits;
+            
+            if (mat[r][c] < 0) {
+                digits++;
+            }
+            
+            if (digits > maxDigits) {
+                maxDigits = digits;
+            }
         }
+        widths[c] = maxDigits;
+    }
+    return widths;
+}
+
+    std::ostream& operator<<(std::ostream& os, const Matrix<double>& mat) {
+        std::vector<int> widths = getColWidths(mat);
         
         int precision = 4;
         for (int r = 0; r < mat.rows(); r++) {

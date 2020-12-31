@@ -1,16 +1,16 @@
 # =====
-# ArithmeticOperators
+# AdditionOperators
 # =====
-add_executable(ArithmeticOperators ArithmeticOperators.cpp)
-target_link_libraries(ArithmeticOperators CashewMath)
-add_test(NAME ArithmeticOperators_test COMMAND ArithmeticOperators)
+add_executable(AdditionOperators AdditionOperators.cpp)
+target_link_libraries(AdditionOperators CashewMath)
+add_test(NAME AdditionOperators_test COMMAND AdditionOperators)
 
 # =====
-# BracketOperator
+# BracketOperators
 # =====
-add_executable(BracketOperator BracketOperator.cpp)
-target_link_libraries(BracketOperator CashewMath)
-add_test(NAME BracketOperator_test COMMAND BracketOperator)
+add_executable(BracketOperators BracketOperators.cpp)
+target_link_libraries(BracketOperators CashewMath)
+add_test(NAME BracketOperators_test COMMAND BracketOperators)
 
 # =====
 # ComparisonOperators
