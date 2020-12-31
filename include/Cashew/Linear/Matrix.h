@@ -98,7 +98,6 @@ namespace Cashew {
         return mData[r];
     }
 
-//    template<class T, std::enable_if<std::is_same<int>::value>::type>
     template<>
     Matrix<int>::operator Matrix<double>() const {
         Matrix<double> dMat(mRows, mCols);

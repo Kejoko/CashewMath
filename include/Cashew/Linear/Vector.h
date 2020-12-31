@@ -22,6 +22,8 @@ namespace Cashew {
 
         T operator[](int i) const;
         T& operator[](int i);
+        
+        operator Vector<double>() const;
     
       private:
         int mSize;
@@ -88,6 +90,15 @@ namespace Cashew {
         validateIndex(i);
         
         return mData[i];
+    }
+
+    template<>
+    Vector<int>::operator Vector<double>() const {
+        Vector<double> dVec(mSize);
+        for (int i = 0; i < mSize; i++) {
+            dVec[i] = (double)mData[i];
+        }
+        return dVec;
     }
 
     template<class T>
