@@ -2,8 +2,8 @@
 
 #include "Cashew/Linear.h"
 
-int testVectorNorm() {
-    std::cout << "----- Vector norm -----\n";
+int testMatrixVectorMultiplication() {
+    std::cout << "----- Matrix * Vector multiplication -----\n";
     
     std::cout << '\n';
     return 0;
@@ -13,8 +13,8 @@ int testVectorNorm() {
 
 
 
-int testVectorNormalization() {
-    std::cout << "----- Vector normalization -----\n";
+int testMatrixMatrixMultiplication() {
+    std::cout << "----- Matrix * Matrix multiplication -----\n";
     
     std::cout << '\n';
     return 0;
@@ -27,10 +27,10 @@ int testVectorNormalization() {
 int main() {
     int success = 0;
     
-    success = testVectorNorm();
+    success = testMatrixVectorMultiplication();
     if (success != 0) return success;
     
-    success = testVectorNormalization();
+    success = testMatrixMatrixMultiplication();
     if (success != 0) return success;
     
     std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";
