@@ -44,8 +44,6 @@ namespace Cashew {
         Matrix<T, R, C>& operator*=(double scalar);
         Matrix<T, R, C>& operator/=(double scalar);
         
-//        operator Matrix<double>() const;
-        
       private:
         size_t mRows;
         size_t mCols;

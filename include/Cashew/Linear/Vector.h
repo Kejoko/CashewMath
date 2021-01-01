@@ -45,8 +45,6 @@ namespace Cashew {
         Vector<T, S>& operator-=(const Vector<T, S>& rhs);
         Vector<T, S>& operator*=(double scalar);
         Vector<T, S>& operator/=(double scalar);
-        
-//        operator Vector<double, S>() const;
     
       private:
         size_t mSize;
