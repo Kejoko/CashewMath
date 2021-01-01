@@ -27,7 +27,7 @@ namespace Cashew {
         int size() const { return mRows * mCols; }
         
         void fill(T value);
-        void clear();
+        void clear() { fill(0); };
 
         Vector<T, C> operator[](int i) const;
         Vector<T, C>& operator[](int i);
@@ -41,9 +41,9 @@ namespace Cashew {
 //        operator Matrix<double>() const;
         
       private:
-        int mRows;
-        int mCols;
-        std::vector<Vector<T, C>> mData;
+        size_t mRows;
+        size_t mCols;
+        Vector<T, C> mData[R];
         
         void validateRow(int r) const;
     };
@@ -61,10 +61,12 @@ namespace Cashew {
         mRows = R;
         mCols = C;
         
-        for (int i = 0; i < mRows; i++) {
-            mData.emplace_back();
+        // Can replace with clear() even when const Matrix being constructed?
+        for (int r = 0; r < R; r++) {
+            for (int c = 0; c < C; c++) {
+                mData[r][c] = 0;
+            }
         }
-        mData.shrink_to_fit();
     }
 
     template<class T, size_t R, size_t C>
@@ -76,18 +78,18 @@ namespace Cashew {
         mRows = R;
         mCols = C;
         
-        for (int i = 0; i < mRows; i++) {
-            mData.emplace_back();
+        // Can replace with fill(value) even when const Matrix being constructed?
+        for (int r = 0; r < R; r++) {
+            for (int c = 0; c < C; c++) {
+                mData[r][c] = value;
+            }
         }
-        mData.shrink_to_fit();
-        
-        fill(value);
     }
 
     template<class T, size_t R, size_t C>
     void Matrix<T, R, C>::fill(T value) {
-        for (Vector<T, C>& vec : mData) {
-            vec.fill(value);
+        for (int r = 0; r < R; r++) {
+            mData[r].fill(value);
         }
     }
 
@@ -119,25 +121,10 @@ namespace Cashew {
     }
 
     template<class T, size_t R, size_t C>
-    void validateDimensions(const Matrix<T, R, C>& matA, const Matrix<T, R, C>& matB, const std::string& operation) {
-        if (matA.rows() != matB.rows() || matA.cols() != matB.cols()) {
-            throw std::domain_error(operation +
-                                    " invalid for Cashew::Matrix of size " +
-                                    std::to_string(matA.rows()) + ',' +
-                                    std::to_string(matA.cols()) +
-                                    " and Cashew::Matrix of size " +
-                                    std::to_string(matB.rows()) + ',' +
-                                    std::to_string(matB.cols()) + '.');
-        }
-    }
-
-    template<class T, size_t R, size_t C>
     Matrix<T, R, C>& Matrix<T, R, C>::operator=(const Matrix<T, R, C>& rhs) {
         if (this == &rhs) {
             return *this;
         }
-        
-        validateDimensions(*this, rhs, "Assignmnt");
         
         for (int r = 0; r < mRows; r++) {
             for (int c = 0; c < mCols; c++) {
@@ -161,8 +148,6 @@ namespace Cashew {
 
     template<class T, size_t R, size_t C>
     bool operator==(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
-        validateDimensions(lhs, rhs, "Comparison");
-        
         for (int r = 0; r < lhs.rows(); r++) {
             for (int c = 0; c < lhs.cols(); c++) {
                 if (lhs[r][c] != rhs[r][c]) {
@@ -181,8 +166,6 @@ namespace Cashew {
 
     template<class T, size_t R, size_t C>
     Matrix<T, R, C> operator+(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
-        validateDimensions(lhs, rhs, "Addition");
-        
         Matrix<T, R, C> mat;
         for (int r = 0; r < lhs.rows(); r++) {
             for (int c = 0; c < lhs.cols(); c++) {
@@ -201,8 +184,6 @@ namespace Cashew {
 
     template<class T, size_t R, size_t C>
     Matrix<T, R, C> operator-(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
-        validateDimensions(lhs, rhs, "Subtraction");
-        
         Matrix<T, R, C> mat;
         for (int r = 0; r < lhs.rows(); r++) {
             for (int c = 0; c < lhs.cols(); c++) {
