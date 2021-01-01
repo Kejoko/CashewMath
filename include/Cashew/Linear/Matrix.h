@@ -9,15 +9,21 @@
 #include <iomanip>
 #include <ostream>
 #include <string>
+#include <typeinfo>
 #include <type_traits>
 #include <vector>
 
 #include "Cashew/Linear/Vector.h"
 
+#define CASHEW_MATRIX_TEMPLATE template<class T, size_t R, size_t C>
+
 namespace Cashew {
 
-    template<class T, size_t R, size_t C>
-    class Matrix {
+    template<class T, size_t R, size_t C, typename Enable = void>
+    class Matrix;
+
+    CASHEW_MATRIX_TEMPLATE
+    class Matrix<T, R, C, ArithmeticPolicy<T>> {
       public:
         Matrix();
         Matrix(T value);
@@ -52,8 +58,8 @@ namespace Cashew {
     // Member functions
     //
 
-    template<class T, size_t R, size_t C>
-    Matrix<T, R, C>::Matrix() {
+    CASHEW_MATRIX_TEMPLATE
+    Matrix<T, R, C, ArithmeticPolicy<T>>::Matrix() {
         if (R <= 0 || C <= 0) {
             throw std::domain_error("Cannot create Cashew::Matrix with less than 1 rows or less than 1 columns");
         }
@@ -69,8 +75,8 @@ namespace Cashew {
         }
     }
 
-    template<class T, size_t R, size_t C>
-    Matrix<T, R, C>::Matrix(T value) {
+    CASHEW_MATRIX_TEMPLATE
+    Matrix<T, R, C, ArithmeticPolicy<T>>::Matrix(T value) {
         if (R <= 0 || C <= 0) {
             throw std::domain_error("Cannot create Cashew::Matrix with less than 1 rows or less than 1 columns");
         }
@@ -86,15 +92,15 @@ namespace Cashew {
         }
     }
 
-    template<class T, size_t R, size_t C>
-    void Matrix<T, R, C>::fill(T value) {
+    CASHEW_MATRIX_TEMPLATE
+    void Matrix<T, R, C, ArithmeticPolicy<T>>::fill(T value) {
         for (int r = 0; r < R; r++) {
             mData[r].fill(value);
         }
     }
 
-    template<class T, size_t R, size_t C>
-    void Matrix<T, R, C>::validateRow(int r) const {
+    CASHEW_MATRIX_TEMPLATE
+    void Matrix<T, R, C, ArithmeticPolicy<T>>::validateRow(int r) const {
         if (r < 0 || r >= mRows) {
             throw std::out_of_range("Row " + std::to_string(r) +
                                     " is out of bounds for Cashew::Matrix with " +
@@ -106,22 +112,22 @@ namespace Cashew {
     // Operator overloads
     //
 
-    template<class T, size_t R, size_t C>
-    Vector<T, C> Matrix<T, R, C>::operator[](int r) const {
+    CASHEW_MATRIX_TEMPLATE
+    Vector<T, C> Matrix<T, R, C, ArithmeticPolicy<T>>::operator[](int r) const {
         validateRow(r);
         
         return mData[r];
     }
 
-    template<class T, size_t R, size_t C>
-    Vector<T, C>& Matrix<T, R, C>::operator[](int r) {
+    CASHEW_MATRIX_TEMPLATE
+    Vector<T, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator[](int r) {
         validateRow(r);
         
         return mData[r];
     }
 
-    template<class T, size_t R, size_t C>
-    Matrix<T, R, C>& Matrix<T, R, C>::operator=(const Matrix<T, R, C>& rhs) {
+    CASHEW_MATRIX_TEMPLATE
+    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator=(const Matrix<T, R, C>& rhs) {
         if (this == &rhs) {
             return *this;
         }
@@ -135,18 +141,7 @@ namespace Cashew {
         return *this;
     }
 
-//    template<>
-//    Matrix<int>::operator Matrix<double>() const {
-//        Matrix<double> dMat(mRows, mCols);
-//        for (int r = 0; r < mRows; r++) {
-//            for (int c = 0; c < mCols; c++) {
-//                dMat[r][c] = (double)mData[r][c];
-//            }
-//        }
-//        return dMat;
-//    }
-
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     bool operator==(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         for (int r = 0; r < lhs.rows(); r++) {
             for (int c = 0; c < lhs.cols(); c++) {
@@ -159,12 +154,12 @@ namespace Cashew {
         return true;
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     bool operator!=(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         return !(lhs == rhs);
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     Matrix<T, R, C> operator+(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         Matrix<T, R, C> mat;
         for (int r = 0; r < lhs.rows(); r++) {
@@ -176,13 +171,13 @@ namespace Cashew {
         return mat;
     }
 
-    template<class T, size_t R, size_t C>
-    Matrix<T, R, C>& Matrix<T, R, C>::operator+=(const Matrix<T, R, C>& rhs) {
+    CASHEW_MATRIX_TEMPLATE
+    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator+=(const Matrix<T, R, C>& rhs) {
         *this = *this + rhs;
         return *this;
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     Matrix<T, R, C> operator-(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         Matrix<T, R, C> mat;
         for (int r = 0; r < lhs.rows(); r++) {
@@ -194,13 +189,13 @@ namespace Cashew {
         return mat;
     }
 
-    template<class T, size_t R, size_t C>
-    Matrix<T, R, C>& Matrix<T, R, C>::operator-=(const Matrix<T, R, C>& rhs) {
+    CASHEW_MATRIX_TEMPLATE
+    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator-=(const Matrix<T, R, C>& rhs) {
         *this = *this - rhs;
         return *this;
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     Matrix<T, R, C> operator*(const Matrix<T, R, C>& lhs, double scalar) {
         Matrix<T, R, C> mat;
         
@@ -213,18 +208,18 @@ namespace Cashew {
         return mat;
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     Matrix<T, R, C> operator*(double scalar, const Matrix<T, R, C>& rhs) {
         return rhs * scalar;
     }
 
-    template<class T, size_t R, size_t C>
-    Matrix<T, R, C>& Matrix<T, R, C>::operator*=(double scalar) {
+    CASHEW_MATRIX_TEMPLATE
+    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator*=(double scalar) {
         *this = *this * scalar;
         return *this;
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     Matrix<T, R, C> operator/(const Matrix<T, R, C>& lhs, double scalar) {
         Matrix<T, R, C> mat;
         
@@ -237,27 +232,19 @@ namespace Cashew {
         return mat;
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     Matrix<T, R, C> operator/(double scalar, const Matrix<T, R, C>& rhs) {
         return rhs / scalar;
     }
 
-    template<class T, size_t R, size_t C>
-    Matrix<T, R, C>& Matrix<T, R, C>::operator/=(double scalar) {
+    CASHEW_MATRIX_TEMPLATE
+    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator/=(double scalar) {
         *this = *this / scalar;
         return *this;
     }
 
-    template<class T, size_t R, size_t C>
+    CASHEW_MATRIX_TEMPLATE
     std::ostream& operator<<(std::ostream& os, const Matrix<T, R, C>& mat) {
-        for (int r = 0; r < mat.rows(); r++) {
-            os << mat[r] << '\n';
-        }
-        return os;
-    }
-
-    template<class T, size_t R, size_t C>
-    std::vector<int> getColWidths(const Matrix<double, R, C>& mat) {
         std::vector<int> widths(mat.cols());
         for (int c = 0; c < mat.cols(); c++) {
             int maxDigits = 0;
@@ -281,11 +268,16 @@ namespace Cashew {
             }
             widths[c] = maxDigits;
         }
-        return widths;
-    }
-
-    template<class T, size_t R, size_t C>
-    void printNumericMatrix(std::ostream& os, const Matrix<T, R, C>& mat, const std::vector<int>& widths, int precision) {
+        
+        T dummy;
+        std::string typeName = typeid(dummy).name();
+        os << typeName << '\n';
+        
+        int precision = -1;
+        if (typeName == "f" || typeName == "d" || typeName == "e") {
+            precision = 4;
+        }
+        
         for (int r = 0; r < mat.rows(); r++) {
             os << '|';
             for (int c = 0; c < mat.cols(); c++) {
@@ -306,24 +298,6 @@ namespace Cashew {
                 os << '\n';
             }
         }
-    }
-
-    template<class T, size_t R, size_t C>
-    std::ostream& operator<<(std::ostream& os, const Matrix<double, R, C>& mat) {
-        std::vector<int> widths = getColWidths(mat);
-        
-        int decimalPlaces = 4;
-        printNumericMatrix(os, mat, widths, decimalPlaces);
-        
-        return os;
-    }
-
-    template<class T, size_t R, size_t C>
-    std::ostream& operator<<(std::ostream& os, const Matrix<int, R, C>& mat) {
-        std::vector<int> widths = getColWidths(mat);
-
-        printNumericMatrix(os, mat, widths, -1);
-
         return os;
     }
 }

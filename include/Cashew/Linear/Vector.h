@@ -126,15 +126,6 @@ namespace Cashew {
         return *this;
     }
 
-//    template<size_t S>
-//    Vector<int, S>::operator Vector<double, S>() const {
-//        Vector<double> dVec(mSize);
-//        for (int i = 0; i < mSize; i++) {
-//            dVec[i] = (double)mData[i];
-//        }
-//        return dVec;
-//    }
-
     CASHEW_VECTOR_TEMPLATE
     bool operator==(const Vector<T, S>& lhs, const Vector<T, S>& rhs) {
         for (int i = 0; i < lhs.size(); i++) {
