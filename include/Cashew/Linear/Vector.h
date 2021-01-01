@@ -190,7 +190,7 @@ namespace Cashew {
 
     template<class T>
     Vector<T> operator*(const Vector<T>& lhs, double scalar) {
-        Vector<T> vec(lhs.size);
+        Vector<T> vec(lhs.size());
         for (int i = 0; i < lhs.size(); i++) {
             vec[i] = lhs[i] * scalar;
         }
