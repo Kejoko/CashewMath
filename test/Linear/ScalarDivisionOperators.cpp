@@ -5,12 +5,12 @@
 int testVectorDivision() {
     std::cout << "----- Vector division with scalars via / and /= -----\n";
     
-    Cashew::Vector<int> vec1(3);
+    Cashew::Vector<int, 3> vec1;
     vec1[0] = 150;
     vec1[1] = 100;
     vec1[2] = 50;
-    Cashew::Vector<int> vec2(3);
-    Cashew::Vector<int> result(3);
+    Cashew::Vector<int, 3> vec2;
+    Cashew::Vector<int, 3> result;
     result[0] = 30;
     result[1] = 20;
     result[2] = 10;
@@ -38,13 +38,13 @@ int testVectorDivision() {
 int testMatrixDivision() {
     std::cout << "----- Matrix division with scalars via / and /= -----\n";
     
-    Cashew::Matrix<int> mat1(2,2);
+    Cashew::Matrix<int, 2, 2> mat1;
     mat1[0][0] = 10;
     mat1[0][1] = 20;
     mat1[1][0] = 30;
     mat1[1][1] = 40;
-    Cashew::Matrix<int> mat2(2,2);
-    Cashew::Matrix<int> result(2,2);
+    Cashew::Matrix<int, 2, 2> mat2;
+    Cashew::Matrix<int, 2, 2> result;
     result[0][0] = 5;
     result[0][1] = 10;
     result[1][0] = 15;
