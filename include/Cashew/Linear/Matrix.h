@@ -28,15 +28,17 @@ namespace Cashew {
         void fill(T value);
         void clear();
 
-        Cashew::Vector<T> operator[](int i) const;
-        Cashew::Vector<T>& operator[](int i);
+        Vector<T> operator[](int i) const;
+        Vector<T>& operator[](int i);
+        
+        void operator=(const Matrix<T>& mat);
         
         operator Matrix<double>() const;
         
       private:
         int mRows;
         int mCols;
-        std::vector<Cashew::Vector<T>> mData;
+        std::vector<Vector<T>> mData;
         
         void validateRow(int r) const;
     };
@@ -61,12 +63,12 @@ namespace Cashew {
         mRows = rows;
         mCols = cols;
         
-        
+        fill(value);
     }
 
     template<class T>
     void Matrix<T>::fill(T value) {
-        for (Cashew::Vector<T>& vec : mData) {
+        for (Vector<T>& vec : mData) {
             vec.fill(value);
         }
     }
@@ -85,17 +87,30 @@ namespace Cashew {
     //
 
     template<class T>
-    Cashew::Vector<T> Matrix<T>::operator[](int r) const {
+    Vector<T> Matrix<T>::operator[](int r) const {
         validateRow(r);
         
         return mData[r];
     }
 
     template<class T>
-    Cashew::Vector<T>& Matrix<T>::operator[](int r) {
+    Vector<T>& Matrix<T>::operator[](int r) {
         validateRow(r);
         
         return mData[r];
+    }
+
+    template<class T>
+    void Matrix<T>::operator=(const Matrix<T>& mat) {
+        if (mRows != mat.rows() || mCols != mat.cols()) {
+            throw std::domain_error("Cannot assign Cashew::Matrix of different sizes to eachother.");
+        }
+        
+        for (int r = 0; r < mRows; r++) {
+            for (int c = 0; c < mCols; c++) {
+                mData[r][c] = mat[r][c];
+            }
+        }
     }
 
     template<>

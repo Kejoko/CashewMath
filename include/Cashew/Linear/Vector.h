@@ -23,6 +23,8 @@ namespace Cashew {
         T operator[](int i) const;
         T& operator[](int i);
         
+        void operator=(const Vector<T>& vec);
+        
         operator Vector<double>() const;
     
       private:
@@ -90,6 +92,17 @@ namespace Cashew {
         validateIndex(i);
         
         return mData[i];
+    }
+
+    template<class T>
+    void Vector<T>::operator=(const Vector<T>& vec) {
+        if (mSize != vec.size()) {
+            throw std::domain_error("Cannot assign Cashew::Vector of different sizes to eachother.");
+        }
+        
+        for (int i = 0; i < mSize; i++) {
+            mData[i] = vec[i];
+        }
     }
 
     template<>
