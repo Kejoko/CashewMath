@@ -1,1 +1,7 @@
-create_unit_test(BracketOperator BracketOperator.cpp)
+create_unit_test(AdditionOperators AdditionOperators.cpp)
+create_unit_test(AssignmentOperators AssignmentOperators.cpp)
+create_unit_test(BracketOperators BracketOperators.cpp)
+create_unit_test(ComparisonOperators ComparisonOperators.cpp)
+create_unit_test(DivisionOperators DivisionOperators.cpp)
+create_unit_test(MultiplicationOperators MultiplicationOperators.cpp)
+create_unit_test(SubtractionOperators SubtractionOperators.cpp)

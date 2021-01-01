@@ -8,6 +8,7 @@
 
 #include <iomanip>
 #include <ostream>
+#include <type_traits>
 #include <vector>
 
 #include "Cashew/Linear/Vector.h"
@@ -17,25 +18,29 @@ namespace Cashew {
     template<class T>
     class Matrix {
       public:
-
         Matrix(int rows, int cols);
         Matrix(int rows, int cols, T value);
 
-        int rows() { return mRows; }
-        int cols() { return mCols; }
-        int size() { return mRows * mCols; }
+        int rows() const { return mRows; }
+        int cols() const { return mCols; }
+        int size() const { return mRows * mCols; }
         
         void fill(T value);
         void clear();
 
-        Cashew::Vector<T>& operator[](int i);
+        Vector<T> operator[](int i) const;
+        Vector<T>& operator[](int i);
+        
+        void operator=(const Matrix<T>& mat);
+        
+        operator Matrix<double>() const;
         
       private:
-        
         int mRows;
         int mCols;
-        std::vector<Cashew::Vector<T>> mData;
+        std::vector<Vector<T>> mData;
         
+        void validateRow(int r) const;
     };
 
     //
@@ -58,13 +63,22 @@ namespace Cashew {
         mRows = rows;
         mCols = cols;
         
-        
+        fill(value);
     }
 
     template<class T>
     void Matrix<T>::fill(T value) {
-        for (Cashew::Vector<T>& vec : mData) {
+        for (Vector<T>& vec : mData) {
             vec.fill(value);
+        }
+    }
+
+    template<class T>
+    void Matrix<T>::validateRow(int r) const {
+        if (r < 0 || r >= mRows) {
+            throw std::out_of_range("Row " + std::to_string(r) +
+                                    " is out of bounds for Cashew::Matrix with " +
+                                    std::to_string(mRows) + " rows.");
         }
     }
 
@@ -73,23 +87,148 @@ namespace Cashew {
     //
 
     template<class T>
-    Cashew::Vector<T>& Matrix<T>::operator[](int r) {
-        if (r < 0 || r >= mRows) {
-            throw std::out_of_range("Row " + std::to_string(r) + " is out of bounds for Cashew::Matrix with " + std::to_string(mRows) + " rows.");
-        }
+    Vector<T> Matrix<T>::operator[](int r) const {
+        validateRow(r);
         
         return mData[r];
     }
 
     template<class T>
-    std::ostream& operator<<(std::ostream& os, Matrix<T>& mat) {
+    Vector<T>& Matrix<T>::operator[](int r) {
+        validateRow(r);
+        
+        return mData[r];
+    }
+
+    template<class T>
+    void Matrix<T>::operator=(const Matrix<T>& mat) {
+        if (mRows != mat.rows() || mCols != mat.cols()) {
+            throw std::domain_error("Cannot assign Cashew::Matrix of different sizes to eachother.");
+        }
+        
+        for (int r = 0; r < mRows; r++) {
+            for (int c = 0; c < mCols; c++) {
+                mData[r][c] = mat[r][c];
+            }
+        }
+    }
+
+    template<>
+    Matrix<int>::operator Matrix<double>() const {
+        Matrix<double> dMat(mRows, mCols);
+        for (int r = 0; r < mRows; r++) {
+            for (int c = 0; c < mCols; c++) {
+                dMat[r][c] = (double)mData[r][c];
+            }
+        }
+        return dMat;
+    }
+
+    template<class T>
+    void validateDimensions(const Matrix<T>& matA, const Matrix<T>& matB) {
+        if (matA.rows() != matB.rows() || matA.cols() != matB.cols()) {
+            throw std::domain_error("Comparison invalid for Cashew::Matrix of size " +
+                                    std::to_string(matA.rows()) + ',' +
+                                    std::to_string(matA.cols()) +
+                                    " and Cashew::Matrix of size " +
+                                    std::to_string(matB.rows()) + ',' +
+                                    std::to_string(matB.cols()) + '.');
+        }
+    }
+
+    template<class T>
+    bool operator==(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        validateDimensions(lhs, rhs);
+        
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                if (lhs[r][c] != rhs[r][c]) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    template<class T>
+    bool operator!=(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        return !(lhs == rhs);
+    }
+
+    template<class T>
+    Matrix<T> operator+(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        validateDimensions(lhs, rhs);
+        
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] + rhs[r][c];
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator-(const Matrix<T>& lhs, const Matrix<T>& rhs) {
+        validateDimensions(lhs, rhs);
+        
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] - rhs[r][c];
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator*(const Matrix<T>& lhs, double scalar) {
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] * scalar;
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator*(double scalar, const Matrix<T>& rhs) {
+        return rhs * scalar;
+    }
+
+    template<class T>
+    Matrix<T> operator/(const Matrix<T>& lhs, double scalar) {
+        Matrix<T> mat(lhs.rows(), lhs.cols());
+        
+        for (int r = 0; r < lhs.rows(); r++) {
+            for (int c = 0; c < lhs.cols(); c++) {
+                mat[r][c] = lhs[r][c] / scalar;
+            }
+        }
+        
+        return mat;
+    }
+
+    template<class T>
+    Matrix<T> operator/(double scalar, const Matrix<T>& rhs) {
+        return rhs / scalar;
+    }
+
+    template<class T>
+    std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat) {
         for (int r = 0; r < mat.rows(); r++) {
             os << mat[r] << '\n';
         }
         return os;
     }
 
-    std::ostream& operator<<(std::ostream& os, Matrix<double>& mat) {
+    std::vector<int> getColWidths(const Matrix<double>& mat) {
         std::vector<int> widths(mat.cols());
         for (int c = 0; c < mat.cols(); c++) {
             int maxDigits = 0;
@@ -113,8 +252,11 @@ namespace Cashew {
             }
             widths[c] = maxDigits;
         }
-        
-        int precision = 4;
+        return widths;
+    }
+
+    template<class T>
+    void printNumericMatrix(std::ostream& os, const Matrix<T>& mat, const std::vector<int>& widths, int precision) {
         for (int r = 0; r < mat.rows(); r++) {
             os << '|';
             for (int c = 0; c < mat.cols(); c++) {
@@ -135,54 +277,22 @@ namespace Cashew {
                 os << '\n';
             }
         }
+    }
+
+    std::ostream& operator<<(std::ostream& os, const Matrix<double>& mat) {
+        std::vector<int> widths = getColWidths(mat);
+        
+        int decimalPlaces = 4;
+        printNumericMatrix(os, mat, widths, decimalPlaces);
         
         return os;
     }
 
-    std::ostream& operator<<(std::ostream& os, Matrix<int>& mat) {
-        std::vector<int> widths(mat.cols());
-        for (int c = 0; c < mat.cols(); c++) {
-            int maxDigits = 0;
-            for (int r = 0; r < mat.rows(); r++) {
-                double dVal = mat[r][c] + 0.5 - (mat[r][c] < 0);
-                int iVal = std::abs((int)dVal);
-                int digits = 0;
-                
-                while (iVal != 0) {
-                    iVal /= 10;
-                    digits++;
-                }
-                
-                if (mat[r][c] < 0) {
-                    digits++;
-                }
-                
-                if (digits > maxDigits) {
-                    maxDigits = digits;
-                }
-            }
-            widths[c] = maxDigits;
-        }
-        
-        for (int r = 0; r < mat.rows(); r++) {
-            os << '|';
-            for (int c = 0; c < mat.cols(); c++) {
-                os << std::setw(widths[c] + 1)
-                   << std::right
-                   << std::setfill(' ')
-                   << mat[r][c];
-                
-                if (c < mat.cols() - 1) {
-                    os << "  ";
-                }
-            }
-            os << '|';
-            
-            if (r < mat.rows()-1) {
-                os << '\n';
-            }
-        }
-        
+    std::ostream& operator<<(std::ostream& os, const Matrix<int>& mat) {
+        std::vector<int> widths = getColWidths(mat);
+
+        printNumericMatrix(os, mat, widths, -1);
+
         return os;
     }
 

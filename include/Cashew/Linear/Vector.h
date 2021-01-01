@@ -15,17 +15,23 @@ namespace Cashew {
         Vector(int size);
         Vector(int size, T value);
         
-        int size() { return mSize; }
+        int size() const { return mSize; }
     
         void fill(T value);
         void clear();
 
+        T operator[](int i) const;
         T& operator[](int i);
+        
+        void operator=(const Vector<T>& vec);
+        
+        operator Vector<double>() const;
     
       private:
         int mSize;
         std::vector<T> mData;
-    
+        
+        void validateIndex(int) const;
     };
 
     //
@@ -34,12 +40,20 @@ namespace Cashew {
 
     template<class T>
     Vector<T>::Vector(int size) {
+        if (size == 0) {
+            throw std::domain_error("Cannot create a Cashew::Vector of size 0.");
+        }
+        
         mSize = size;
         mData.resize(mSize);
     }
 
     template<class T>
     Vector<T>::Vector(int size, T value) {
+        if (size == 0) {
+            throw std::domain_error("Cannot create a Cashew::Vector of size 0.");
+        }
+        
         mSize = size;
         mData.resize(mSize);
     
@@ -53,21 +67,137 @@ namespace Cashew {
         }
     }
 
+    template<class T>
+    void Vector<T>::validateIndex(int i) const {
+        if (i < 0 || i >= mSize) {
+            throw std::out_of_range("Index " + std::to_string(i) +
+                                    " is out of bounds for Cashew::Vector of size " +
+                                    std::to_string(mSize) + '.');
+        }
+    }
+
     //
     // Operator overloads
     //
 
     template<class T>
-    T& Vector<T>::operator[](int i) {
-        if (i < 0 || i >= mSize) {
-            throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds for Cashew::Vector of size " + std::to_string(mSize) + ".");
-        }
+    T Vector<T>::operator[](int i) const {
+        validateIndex(i);
         
         return mData[i];
     }
 
     template<class T>
-    std::ostream& operator<<(std::ostream& os, Vector<T>& vec) {
+    T& Vector<T>::operator[](int i) {
+        validateIndex(i);
+        
+        return mData[i];
+    }
+
+    template<class T>
+    void Vector<T>::operator=(const Vector<T>& vec) {
+        if (mSize != vec.size()) {
+            throw std::domain_error("Cannot assign Cashew::Vector of different sizes to eachother.");
+        }
+        
+        for (int i = 0; i < mSize; i++) {
+            mData[i] = vec[i];
+        }
+    }
+
+    template<>
+    Vector<int>::operator Vector<double>() const {
+        Vector<double> dVec(mSize);
+        for (int i = 0; i < mSize; i++) {
+            dVec[i] = (double)mData[i];
+        }
+        return dVec;
+    }
+
+    template<class T>
+    void validateSizes(const Vector<T>& vecA, const Vector<T>& vecB) {
+        if (vecA.size() != vecB.size()) {
+            throw std::domain_error("Comparison invalid for Cashew::Vector of size "
+                                    + std::to_string(vecA.size())
+                                    + " and Cashew::Vector of size "
+                                    + std::to_string(vecB.size()) + '.');
+        }
+    }
+
+    template<class T>
+    bool operator==(const Vector<T>& lhs, const Vector<T>& rhs) {
+        validateSizes(lhs, rhs);
+        
+        for (int i = 0; i < lhs.size(); i++) {
+            if (lhs[i] != rhs[i]) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    template<class T>
+    bool operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {
+        return !(lhs == rhs);
+    }
+
+    template<class T>
+    Vector<T> operator+(const Vector<T>& lhs, const Vector<T>& rhs) {
+        validateSizes(lhs, rhs);
+        
+        Vector<T> vec(lhs.size);
+        for (int i = 0; i < lhs.size (); i++) {
+            vec[i] = lhs[i] + rhs[i];
+        }
+        
+        return vec;
+    }
+
+    template<class T>
+    Vector<T> operator-(const Vector<T>& lhs, const Vector<T>& rhs) {
+        validateSizes(lhs, rhs);
+        
+        Vector<T> vec(lhs.size);
+        for (int i = 0; i < lhs.size (); i++) {
+            vec[i] = lhs[i] - rhs[i];
+        }
+        
+        return vec;
+    }
+
+    template<class T>
+    Vector<T> operator*(const Vector<T>& lhs, double scalar) {
+        Vector<T> vec(lhs.size);
+        for (int i = 0; i < lhs.size(); i++) {
+            vec[i] = lhs[i] * scalar;
+        }
+        
+        return vec;
+    }
+
+    template<class T>
+    Vector<T> operator*(double scalar, const Vector<T>& rhs) {
+        return rhs * scalar;
+    }
+
+    template<class T>
+    Vector<T> operator/(const Vector<T>& lhs, double scalar) {
+        Vector<T> vec(lhs.size);
+        for (int i = 0; i < lhs.size(); i++) {
+            vec[i] = lhs[i] / scalar;
+        }
+        
+        return vec;
+    }
+
+    template<class T>
+    Vector<T> operator/(double scalar, const Vector<T>& rhs) {
+        return rhs / scalar;
+    }
+
+    template<class T>
+    std::ostream& operator<<(std::ostream& os, const Vector<T>& vec) {
         int width, precision, pad;
     
         os << '|';
