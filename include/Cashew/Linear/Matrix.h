@@ -8,6 +8,7 @@
 
 #include <iomanip>
 #include <ostream>
+#include <string>
 #include <type_traits>
 #include <vector>
 
@@ -31,7 +32,11 @@ namespace Cashew {
         Vector<T> operator[](int i) const;
         Vector<T>& operator[](int i);
         
-        void operator=(const Matrix<T>& mat);
+        Matrix<T>& operator=(const Matrix<T>& rhs);
+        Matrix<T>& operator+=(const Matrix<T>& rhs);
+        Matrix<T>& operator-=(const Matrix<T>& rhs);
+        Matrix<T>& operator*=(double scalar);
+        Matrix<T>& operator/=(double scalar);
         
         operator Matrix<double>() const;
         
@@ -101,16 +106,33 @@ namespace Cashew {
     }
 
     template<class T>
-    void Matrix<T>::operator=(const Matrix<T>& mat) {
-        if (mRows != mat.rows() || mCols != mat.cols()) {
-            throw std::domain_error("Cannot assign Cashew::Matrix of different sizes to eachother.");
+    void validateDimensions(const Matrix<T>& matA, const Matrix<T>& matB, const std::string& operation) {
+        if (matA.rows() != matB.rows() || matA.cols() != matB.cols()) {
+            throw std::domain_error(operation +
+                                    " invalid for Cashew::Matrix of size " +
+                                    std::to_string(matA.rows()) + ',' +
+                                    std::to_string(matA.cols()) +
+                                    " and Cashew::Matrix of size " +
+                                    std::to_string(matB.rows()) + ',' +
+                                    std::to_string(matB.cols()) + '.');
         }
+    }
+
+    template<class T>
+    Matrix<T>& Matrix<T>::operator=(const Matrix<T>& rhs) {
+        if (this == &rhs) {
+            return *this;
+        }
+        
+        validateDimensions(*this, rhs, "Assignmnt");
         
         for (int r = 0; r < mRows; r++) {
             for (int c = 0; c < mCols; c++) {
-                mData[r][c] = mat[r][c];
+                mData[r][c] = rhs[r][c];
             }
         }
+        
+        return *this;
     }
 
     template<>
@@ -125,20 +147,8 @@ namespace Cashew {
     }
 
     template<class T>
-    void validateDimensions(const Matrix<T>& matA, const Matrix<T>& matB) {
-        if (matA.rows() != matB.rows() || matA.cols() != matB.cols()) {
-            throw std::domain_error("Comparison invalid for Cashew::Matrix of size " +
-                                    std::to_string(matA.rows()) + ',' +
-                                    std::to_string(matA.cols()) +
-                                    " and Cashew::Matrix of size " +
-                                    std::to_string(matB.rows()) + ',' +
-                                    std::to_string(matB.cols()) + '.');
-        }
-    }
-
-    template<class T>
     bool operator==(const Matrix<T>& lhs, const Matrix<T>& rhs) {
-        validateDimensions(lhs, rhs);
+        validateDimensions(lhs, rhs, "Comparison");
         
         for (int r = 0; r < lhs.rows(); r++) {
             for (int c = 0; c < lhs.cols(); c++) {
@@ -158,7 +168,7 @@ namespace Cashew {
 
     template<class T>
     Matrix<T> operator+(const Matrix<T>& lhs, const Matrix<T>& rhs) {
-        validateDimensions(lhs, rhs);
+        validateDimensions(lhs, rhs, "Addition");
         
         Matrix<T> mat(lhs.rows(), lhs.cols());
         for (int r = 0; r < lhs.rows(); r++) {
@@ -171,8 +181,14 @@ namespace Cashew {
     }
 
     template<class T>
+    Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& rhs) {
+        *this = *this + rhs;
+        return *this;
+    }
+
+    template<class T>
     Matrix<T> operator-(const Matrix<T>& lhs, const Matrix<T>& rhs) {
-        validateDimensions(lhs, rhs);
+        validateDimensions(lhs, rhs, "Subtraction");
         
         Matrix<T> mat(lhs.rows(), lhs.cols());
         for (int r = 0; r < lhs.rows(); r++) {
@@ -182,6 +198,12 @@ namespace Cashew {
         }
         
         return mat;
+    }
+
+    template<class T>
+    Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& rhs) {
+        *this = *this - rhs;
+        return *this;
     }
 
     template<class T>
@@ -203,6 +225,12 @@ namespace Cashew {
     }
 
     template<class T>
+    Matrix<T>& Matrix<T>::operator*=(double scalar) {
+        *this = *this * scalar;
+        return *this;
+    }
+
+    template<class T>
     Matrix<T> operator/(const Matrix<T>& lhs, double scalar) {
         Matrix<T> mat(lhs.rows(), lhs.cols());
         
@@ -218,6 +246,12 @@ namespace Cashew {
     template<class T>
     Matrix<T> operator/(double scalar, const Matrix<T>& rhs) {
         return rhs / scalar;
+    }
+
+    template<class T>
+    Matrix<T>& Matrix<T>::operator/=(double scalar) {
+        *this = *this / scalar;
+        return *this;
     }
 
     template<class T>
@@ -295,7 +329,6 @@ namespace Cashew {
 
         return os;
     }
-
 }
 
 

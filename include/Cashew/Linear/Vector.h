@@ -23,7 +23,11 @@ namespace Cashew {
         T operator[](int i) const;
         T& operator[](int i);
         
-        void operator=(const Vector<T>& vec);
+        Vector<T>& operator=(const Vector<T>& rhs);
+        Vector<T>& operator+=(const Vector<T>& rhs);
+        Vector<T>& operator-=(const Vector<T>& rhs);
+        Vector<T>& operator*=(double scalar);
+        Vector<T>& operator/=(double scalar);
         
         operator Vector<double>() const;
     
@@ -95,14 +99,20 @@ namespace Cashew {
     }
 
     template<class T>
-    void Vector<T>::operator=(const Vector<T>& vec) {
-        if (mSize != vec.size()) {
+    Vector<T>& Vector<T>::operator=(const Vector<T>& rhs) {
+        if (this == &rhs) {
+            return *this;
+        }
+        
+        if (mSize != rhs.size()) {
             throw std::domain_error("Cannot assign Cashew::Vector of different sizes to eachother.");
         }
         
         for (int i = 0; i < mSize; i++) {
-            mData[i] = vec[i];
+            mData[i] = rhs[i];
         }
+        
+        return *this;
     }
 
     template<>
@@ -146,12 +156,18 @@ namespace Cashew {
     Vector<T> operator+(const Vector<T>& lhs, const Vector<T>& rhs) {
         validateSizes(lhs, rhs);
         
-        Vector<T> vec(lhs.size);
+        Vector<T> vec(lhs.size());
         for (int i = 0; i < lhs.size (); i++) {
             vec[i] = lhs[i] + rhs[i];
         }
         
         return vec;
+    }
+
+    template<class T>
+    Vector<T>& Vector<T>::operator+=(const Vector<T>& rhs) {
+        *this = *this + rhs;
+        return *this;
     }
 
     template<class T>
@@ -164,6 +180,12 @@ namespace Cashew {
         }
         
         return vec;
+    }
+
+    template<class T>
+    Vector<T>& Vector<T>::operator-=(const Vector<T>& rhs) {
+        *this = *this - rhs;
+        return *this;
     }
 
     template<class T>
@@ -182,6 +204,12 @@ namespace Cashew {
     }
 
     template<class T>
+    Vector<T>& Vector<T>::operator*=(double scalar) {
+        *this = *this * scalar;
+        return *this;
+    }
+
+    template<class T>
     Vector<T> operator/(const Vector<T>& lhs, double scalar) {
         Vector<T> vec(lhs.size);
         for (int i = 0; i < lhs.size(); i++) {
@@ -194,6 +222,12 @@ namespace Cashew {
     template<class T>
     Vector<T> operator/(double scalar, const Vector<T>& rhs) {
         return rhs / scalar;
+    }
+
+    template<class T>
+    Vector<T>& Vector<T>::operator/=(double scalar) {
+        *this = *this / scalar;
+        return *this;
     }
 
     template<class T>
@@ -212,7 +246,6 @@ namespace Cashew {
     
         return os;
     }
-
 }
 
 #endif // CASHEW_VECTOR_H_INCLUDE
