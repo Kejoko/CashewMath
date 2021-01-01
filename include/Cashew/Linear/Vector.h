@@ -4,36 +4,51 @@
 #ifndef CASHEW_VECTOR_H_INCLUDE
 #define CASHEW_VECTOR_H_INCLUDE
 
+#include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <vector>
+
+#define CASHEW_VECTOR_TEMPLATE template<class T, size_t S>
 
 namespace Cashew {
 
     template<class T>
-    class Vector {
+    using ArithmeticPolicy = typename std::enable_if<std::is_arithmetic<T>::value>::type;
+
+    template<class T, size_t S, typename Enable = void>
+    class Vector;
+
+    CASHEW_VECTOR_TEMPLATE
+    class Vector<T, S, ArithmeticPolicy<T>> {
       public:
-        Vector(int size);
-        Vector(int size, T value);
+        Vector();
+        Vector(T value);
         
         int size() const { return mSize; }
     
         void fill(T value);
         void clear();
+        
+        double norm() const;
+        Vector<T, S> normalized() const;
+        void normalize();
+        
+        double dot(const Vector<T, S>& rhs) const;
+        double cross(const Vector<T, S>& rhs) const;
 
         T operator[](int i) const;
         T& operator[](int i);
         
-        Vector<T>& operator=(const Vector<T>& rhs);
-        Vector<T>& operator+=(const Vector<T>& rhs);
-        Vector<T>& operator-=(const Vector<T>& rhs);
-        Vector<T>& operator*=(double scalar);
-        Vector<T>& operator/=(double scalar);
-        
-        operator Vector<double>() const;
+        Vector<T, S>& operator=(const Vector<T, S>& rhs);
+        Vector<T, S>& operator+=(const Vector<T, S>& rhs);
+        Vector<T, S>& operator-=(const Vector<T, S>& rhs);
+        Vector<T, S>& operator*=(double scalar);
+        Vector<T, S>& operator/=(double scalar);
     
       private:
-        int mSize;
-        std::vector<T> mData;
+        size_t mSize;
+        T mData[S];
         
         void validateIndex(int) const;
     };
@@ -42,37 +57,35 @@ namespace Cashew {
     // Member functions
     //
 
-    template<class T>
-    Vector<T>::Vector(int size) {
-        if (size == 0) {
-            throw std::domain_error("Cannot create a Cashew::Vector of size 0.");
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S, ArithmeticPolicy<T>>::Vector() {
+        if (S <= 0) {
+            throw std::domain_error("Cannot create a Cashew::Vector of size less than 1.");
         }
         
-        mSize = size;
-        mData.resize(mSize);
+        mSize = S;
     }
 
-    template<class T>
-    Vector<T>::Vector(int size, T value) {
-        if (size == 0) {
-            throw std::domain_error("Cannot create a Cashew::Vector of size 0.");
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S, ArithmeticPolicy<T>>::Vector(T value) {
+        if (S <= 0) {
+            throw std::domain_error("Cannot create a Cashew::Vector of size less than 1.");
         }
         
-        mSize = size;
-        mData.resize(mSize);
+        mSize = S;
     
         fill(value);
     }
 
-    template<class T>
-    void Vector<T>::fill(T value) {
+    CASHEW_VECTOR_TEMPLATE
+    void Vector<T, S, ArithmeticPolicy<T>>::fill(T value) {
         for (int i = 0; i < mSize; i++) {
             mData[i] = value;
         }
     }
 
-    template<class T>
-    void Vector<T>::validateIndex(int i) const {
+    CASHEW_VECTOR_TEMPLATE
+    void Vector<T, S, ArithmeticPolicy<T>>::validateIndex(int i) const {
         if (i < 0 || i >= mSize) {
             throw std::out_of_range("Index " + std::to_string(i) +
                                     " is out of bounds for Cashew::Vector of size " +
@@ -84,28 +97,24 @@ namespace Cashew {
     // Operator overloads
     //
 
-    template<class T>
-    T Vector<T>::operator[](int i) const {
+    CASHEW_VECTOR_TEMPLATE
+    T Vector<T, S, ArithmeticPolicy<T>>::operator[](int i) const {
         validateIndex(i);
         
         return mData[i];
     }
 
-    template<class T>
-    T& Vector<T>::operator[](int i) {
+    CASHEW_VECTOR_TEMPLATE
+    T& Vector<T, S, ArithmeticPolicy<T>>::operator[](int i) {
         validateIndex(i);
         
         return mData[i];
     }
 
-    template<class T>
-    Vector<T>& Vector<T>::operator=(const Vector<T>& rhs) {
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S>& Vector<T, S, ArithmeticPolicy<T>>::operator=(const Vector<T, S>& rhs) {
         if (this == &rhs) {
             return *this;
-        }
-        
-        if (mSize != rhs.size()) {
-            throw std::domain_error("Cannot assign Cashew::Vector of different sizes to eachother.");
         }
         
         for (int i = 0; i < mSize; i++) {
@@ -115,29 +124,8 @@ namespace Cashew {
         return *this;
     }
 
-    template<>
-    Vector<int>::operator Vector<double>() const {
-        Vector<double> dVec(mSize);
-        for (int i = 0; i < mSize; i++) {
-            dVec[i] = (double)mData[i];
-        }
-        return dVec;
-    }
-
-    template<class T>
-    void validateSizes(const Vector<T>& vecA, const Vector<T>& vecB) {
-        if (vecA.size() != vecB.size()) {
-            throw std::domain_error("Comparison invalid for Cashew::Vector of size "
-                                    + std::to_string(vecA.size())
-                                    + " and Cashew::Vector of size "
-                                    + std::to_string(vecB.size()) + '.');
-        }
-    }
-
-    template<class T>
-    bool operator==(const Vector<T>& lhs, const Vector<T>& rhs) {
-        validateSizes(lhs, rhs);
-        
+    CASHEW_VECTOR_TEMPLATE
+    bool operator==(const Vector<T, S>& lhs, const Vector<T, S>& rhs) {
         for (int i = 0; i < lhs.size(); i++) {
             if (lhs[i] != rhs[i]) {
                 return false;
@@ -147,16 +135,14 @@ namespace Cashew {
         return true;
     }
 
-    template<class T>
-    bool operator!=(const Vector<T>& lhs, const Vector<T>& rhs) {
+    CASHEW_VECTOR_TEMPLATE
+    bool operator!=(const Vector<T, S>& lhs, const Vector<T, S>& rhs) {
         return !(lhs == rhs);
     }
 
-    template<class T>
-    Vector<T> operator+(const Vector<T>& lhs, const Vector<T>& rhs) {
-        validateSizes(lhs, rhs);
-        
-        Vector<T> vec(lhs.size());
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S> operator+(const Vector<T, S>& lhs, const Vector<T, S>& rhs) {
+        Vector<T, S> vec;
         for (int i = 0; i < lhs.size (); i++) {
             vec[i] = lhs[i] + rhs[i];
         }
@@ -164,17 +150,15 @@ namespace Cashew {
         return vec;
     }
 
-    template<class T>
-    Vector<T>& Vector<T>::operator+=(const Vector<T>& rhs) {
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S>& Vector<T, S, ArithmeticPolicy<T>>::operator+=(const Vector<T, S>& rhs) {
         *this = *this + rhs;
         return *this;
     }
 
-    template<class T>
-    Vector<T> operator-(const Vector<T>& lhs, const Vector<T>& rhs) {
-        validateSizes(lhs, rhs);
-        
-        Vector<T> vec(lhs.size());
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S> operator-(const Vector<T, S>& lhs, const Vector<T, S>& rhs) {
+        Vector<T, S> vec;
         for (int i = 0; i < lhs.size (); i++) {
             vec[i] = lhs[i] - rhs[i];
         }
@@ -182,15 +166,15 @@ namespace Cashew {
         return vec;
     }
 
-    template<class T>
-    Vector<T>& Vector<T>::operator-=(const Vector<T>& rhs) {
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S>& Vector<T, S, ArithmeticPolicy<T>>::operator-=(const Vector<T, S>& rhs) {
         *this = *this - rhs;
         return *this;
     }
 
-    template<class T>
-    Vector<T> operator*(const Vector<T>& lhs, double scalar) {
-        Vector<T> vec(lhs.size());
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S> operator*(const Vector<T, S>& lhs, double scalar) {
+        Vector<T, S> vec;
         for (int i = 0; i < lhs.size(); i++) {
             vec[i] = lhs[i] * scalar;
         }
@@ -198,20 +182,20 @@ namespace Cashew {
         return vec;
     }
 
-    template<class T>
-    Vector<T> operator*(double scalar, const Vector<T>& rhs) {
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S> operator*(double scalar, const Vector<T, S>& rhs) {
         return rhs * scalar;
     }
 
-    template<class T>
-    Vector<T>& Vector<T>::operator*=(double scalar) {
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S>& Vector<T, S, ArithmeticPolicy<T>>::operator*=(double scalar) {
         *this = *this * scalar;
         return *this;
     }
 
-    template<class T>
-    Vector<T> operator/(const Vector<T>& lhs, double scalar) {
-        Vector<T> vec(lhs.size());
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S> operator/(const Vector<T, S>& lhs, double scalar) {
+        Vector<T, S> vec;
         for (int i = 0; i < lhs.size(); i++) {
             vec[i] = lhs[i] / scalar;
         }
@@ -219,19 +203,19 @@ namespace Cashew {
         return vec;
     }
 
-    template<class T>
-    Vector<T> operator/(double scalar, const Vector<T>& rhs) {
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S> operator/(double scalar, const Vector<T, S>& rhs) {
         return rhs / scalar;
     }
 
-    template<class T>
-    Vector<T>& Vector<T>::operator/=(double scalar) {
+    CASHEW_VECTOR_TEMPLATE
+    Vector<T, S>& Vector<T, S, ArithmeticPolicy<T>>::operator/=(double scalar) {
         *this = *this / scalar;
         return *this;
     }
 
-    template<class T>
-    std::ostream& operator<<(std::ostream& os, const Vector<T>& vec) {
+    CASHEW_VECTOR_TEMPLATE
+    std::ostream& operator<<(std::ostream& os, const Vector<T, S>& vec) {
         int width, precision, pad;
     
         os << '|';

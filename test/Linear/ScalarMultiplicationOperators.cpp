@@ -5,12 +5,12 @@
 int testVectorMultiplication() {
     std::cout << "----- Vector multiplication with scalars via * and *= -----\n";
     
-    Cashew::Vector<int> vec1(3);
+    Cashew::Vector<int, 3> vec1;
     vec1[0] = 1;
     vec1[1] = 2;
     vec1[2] = 3;
-    Cashew::Vector<int> vec2(3);
-    Cashew::Vector<int> result(3);
+    Cashew::Vector<int, 3> vec2;
+    Cashew::Vector<int, 3> result;
     result[0] = 3;
     result[1] = 6;
     result[2] = 9;
@@ -38,13 +38,13 @@ int testVectorMultiplication() {
 int testMatrixMultiplication() {
     std::cout << "----- Matrix Multiplication with scalars via * and *= -----\n";
     
-    Cashew::Matrix<int> mat1(2,2);
+    Cashew::Matrix<int, 2, 2> mat1;
     mat1[0][0] = 1;
     mat1[0][1] = 2;
     mat1[1][0] = 3;
     mat1[1][1] = 4;
-    Cashew::Matrix<int> mat2(2,2);
-    Cashew::Matrix<int> result(2,2);
+    Cashew::Matrix<int, 2, 2> mat2;
+    Cashew::Matrix<int, 2, 2> result;
     result[0][0] = 2;
     result[0][1] = 4;
     result[1][0] = 6;

@@ -2,7 +2,8 @@
 
 #include "Cashew/Math.h"
 
-int testVecAccess(Cashew::Vector<double>& vec) {
+template<size_t S>
+int testVecAccess(Cashew::Vector<double, S>& vec) {
     std::cout << "----- Vector access via [] -----\n";
     
     std::cout << "First    : " << vec[0] << '\n'
@@ -32,7 +33,8 @@ int testVecAccess(Cashew::Vector<double>& vec) {
 
 
 
-int testVecMutate(Cashew::Vector<double>& vec) {
+template<size_t S>
+int testVecMutate(Cashew::Vector<double, S>& vec) {
     std::cout << "----- Vector mutate via [] -----\n";
     
     std::cout << "Modifying element 0\n";
@@ -67,7 +69,8 @@ int testVecMutate(Cashew::Vector<double>& vec) {
 
 
 
-int testMatAccess(Cashew::Matrix<double>& mat) {
+template<size_t R, size_t C>
+int testMatAccess(Cashew::Matrix<double, R, C>& mat) {
     std::cout << "----- Matrix access via [][] -----\n";
     
     std::cout << "First    : " << mat[0][0] << '\n'
@@ -97,7 +100,8 @@ int testMatAccess(Cashew::Matrix<double>& mat) {
 
 
 
-int testMatMutate(Cashew::Matrix<double>& mat) {
+template<size_t R, size_t C>
+int testMatMutate(Cashew::Matrix<double, R, C>& mat) {
     std::cout << "----- Matrix mutate via [][] -----\n";
     
     std::cout << "Modifying element 0,0\n";
@@ -136,7 +140,7 @@ int main() {
     int success = 0;
     
     // Vector
-    Cashew::Vector<double> vec(3);
+    Cashew::Vector<double, 3> vec;
     std::cout << "Vector size " << vec.size() << '\n';
     
     success = testVecMutate(vec);
@@ -148,7 +152,7 @@ int main() {
     std::cout << vec << "\n\n";
     
     // Matrix
-    Cashew::Matrix<double> mat(4,3);
+    Cashew::Matrix<double, 4, 3> mat;
     std::cout << "Matrix dimensions " << mat.rows() << 'x' << mat.cols() << '\n';
     
     success = testMatMutate(mat);
@@ -158,6 +162,8 @@ int main() {
     if (success != 0) return success;
     
     std::cout << mat << "\n\n";
+    
+//    Cashew::Matrix<unsigned long long, 0, 0> ullmat;
     
     // Success
     std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";
