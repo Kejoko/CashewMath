@@ -2,9 +2,10 @@
 
 #include "Cashew/Linear.h"
 
-int testVectorDotProduct() {
-    std::cout << "----- Vector dot product -----\n";
+int testMatrixInvertible() {
+    std::cout << "----- Matrix invertible -----\n";
     
+    std::cout << '\n';
     return 0;
 }
 
@@ -12,9 +13,10 @@ int testVectorDotProduct() {
 
 
 
-int testVectorCrossProduct() {
-    std::cout << "----- Vector cross product -----\n";
+int testMatrixInverse() {
+    std::cout << "----- Matrix inverse -----\n";
     
+    std::cout << '\n';
     return 0;
 }
 
@@ -25,10 +27,10 @@ int testVectorCrossProduct() {
 int main() {
     int success = 0;
     
-    success = testVectorDotProduct();
+    success = testMatrixInvertible();
     if (success != 0) return success;
     
-    success = testVectorCrossProduct();
+    success = testMatrixInverse();
     if (success != 0) return success;
     
     std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";
