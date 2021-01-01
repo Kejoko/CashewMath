@@ -163,8 +163,6 @@ int main() {
     
     std::cout << mat << "\n\n";
     
-//    Cashew::Matrix<unsigned long long, 0, 0> ullmat;
-    
     // Success
     std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";
     return 0;

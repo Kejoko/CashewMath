@@ -15,15 +15,19 @@
 
 #include "Cashew/Linear/Vector.h"
 
-#define CASHEW_MATRIX_TEMPLATE template<class T, size_t R, size_t C>
+#define CASHEW_MAT_TEMPLATE template<class T, size_t R, size_t C>
+#define CASHEW_MAT_EXT_TEMPLATE_ARGS T, R, C, ArithmeticPolicy<T>, SizePolicy<R>, SizePolicy<C>
 
 namespace Cashew {
 
-    template<class T, size_t R, size_t C, typename Enable = void>
+    template<class T, size_t R, size_t C,
+             typename TypeEnable = void,
+             typename RowEnable = void,
+             typename ColEnable = void>
     class Matrix;
 
-    CASHEW_MATRIX_TEMPLATE
-    class Matrix<T, R, C, ArithmeticPolicy<T>> {
+    CASHEW_MAT_TEMPLATE
+    class Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS> {
       public:
         Matrix();
         Matrix(T value);
@@ -56,8 +60,8 @@ namespace Cashew {
     // Member functions
     //
 
-    CASHEW_MATRIX_TEMPLATE
-    Matrix<T, R, C, ArithmeticPolicy<T>>::Matrix() {
+    CASHEW_MAT_TEMPLATE
+    Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::Matrix() {
         if (R <= 0 || C <= 0) {
             throw std::domain_error("Cannot create Cashew::Matrix with less than 1 rows or less than 1 columns");
         }
@@ -73,8 +77,8 @@ namespace Cashew {
         }
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    Matrix<T, R, C, ArithmeticPolicy<T>>::Matrix(T value) {
+    CASHEW_MAT_TEMPLATE
+    Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::Matrix(T value) {
         if (R <= 0 || C <= 0) {
             throw std::domain_error("Cannot create Cashew::Matrix with less than 1 rows or less than 1 columns");
         }
@@ -90,15 +94,15 @@ namespace Cashew {
         }
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    void Matrix<T, R, C, ArithmeticPolicy<T>>::fill(T value) {
+    CASHEW_MAT_TEMPLATE
+    void Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::fill(T value) {
         for (int r = 0; r < R; r++) {
             mData[r].fill(value);
         }
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    void Matrix<T, R, C, ArithmeticPolicy<T>>::validateRow(int r) const {
+    CASHEW_MAT_TEMPLATE
+    void Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::validateRow(int r) const {
         if (r < 0 || r >= mRows) {
             throw std::out_of_range("Row " + std::to_string(r) +
                                     " is out of bounds for Cashew::Matrix with " +
@@ -110,22 +114,22 @@ namespace Cashew {
     // Operator overloads
     //
 
-    CASHEW_MATRIX_TEMPLATE
-    Vector<T, C> Matrix<T, R, C, ArithmeticPolicy<T>>::operator[](int r) const {
+    CASHEW_MAT_TEMPLATE
+    Vector<T, C> Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator[](int r) const {
         validateRow(r);
         
         return mData[r];
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    Vector<T, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator[](int r) {
+    CASHEW_MAT_TEMPLATE
+    Vector<T, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator[](int r) {
         validateRow(r);
         
         return mData[r];
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator=(const Matrix<T, R, C>& rhs) {
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator=(const Matrix<T, R, C>& rhs) {
         if (this == &rhs) {
             return *this;
         }
@@ -139,7 +143,7 @@ namespace Cashew {
         return *this;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     bool operator==(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         for (int r = 0; r < lhs.rows(); r++) {
             for (int c = 0; c < lhs.cols(); c++) {
@@ -152,12 +156,12 @@ namespace Cashew {
         return true;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     bool operator!=(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         return !(lhs == rhs);
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     Matrix<T, R, C> operator+(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         Matrix<T, R, C> mat;
         for (int r = 0; r < lhs.rows(); r++) {
@@ -169,13 +173,13 @@ namespace Cashew {
         return mat;
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator+=(const Matrix<T, R, C>& rhs) {
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator+=(const Matrix<T, R, C>& rhs) {
         *this = *this + rhs;
         return *this;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     Matrix<T, R, C> operator-(const Matrix<T, R, C>& lhs, const Matrix<T, R, C>& rhs) {
         Matrix<T, R, C> mat;
         for (int r = 0; r < lhs.rows(); r++) {
@@ -187,13 +191,13 @@ namespace Cashew {
         return mat;
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator-=(const Matrix<T, R, C>& rhs) {
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator-=(const Matrix<T, R, C>& rhs) {
         *this = *this - rhs;
         return *this;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     Matrix<T, R, C> operator*(const Matrix<T, R, C>& lhs, double scalar) {
         Matrix<T, R, C> mat;
         
@@ -206,18 +210,18 @@ namespace Cashew {
         return mat;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     Matrix<T, R, C> operator*(double scalar, const Matrix<T, R, C>& rhs) {
         return rhs * scalar;
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator*=(double scalar) {
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator*=(double scalar) {
         *this = *this * scalar;
         return *this;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     Matrix<T, R, C> operator/(const Matrix<T, R, C>& lhs, double scalar) {
         Matrix<T, R, C> mat;
         
@@ -230,18 +234,18 @@ namespace Cashew {
         return mat;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     Matrix<T, R, C> operator/(double scalar, const Matrix<T, R, C>& rhs) {
         return rhs / scalar;
     }
 
-    CASHEW_MATRIX_TEMPLATE
-    Matrix<T, R, C>& Matrix<T, R, C, ArithmeticPolicy<T>>::operator/=(double scalar) {
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator/=(double scalar) {
         *this = *this / scalar;
         return *this;
     }
 
-    CASHEW_MATRIX_TEMPLATE
+    CASHEW_MAT_TEMPLATE
     std::ostream& operator<<(std::ostream& os, const Matrix<T, R, C>& mat) {
         std::vector<int> widths(mat.cols());
         for (int c = 0; c < mat.cols(); c++) {
