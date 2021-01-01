@@ -3,7 +3,7 @@
 #include "Cashew/Linear.h"
 
 int testVectorAddition() {
-    std::cout << "----- Vector assignment via = -----\n";
+    std::cout << "----- Vector addition via + and += -----\n";
     
     Cashew::Vector<int> vec1(3);
     vec1[0] = 1;
@@ -49,7 +49,7 @@ int testVectorAddition() {
 
 
 int testMatrixAddition() {
-    std::cout << "----- Matrix assignment via = -----\n";
+    std::cout << "----- Matrix addition via + and += -----\n";
     
     Cashew::Matrix<int> mat1(2,2);
     mat1[0][0] = 1;

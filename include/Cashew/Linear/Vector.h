@@ -174,7 +174,7 @@ namespace Cashew {
     Vector<T> operator-(const Vector<T>& lhs, const Vector<T>& rhs) {
         validateSizes(lhs, rhs);
         
-        Vector<T> vec(lhs.size);
+        Vector<T> vec(lhs.size());
         for (int i = 0; i < lhs.size (); i++) {
             vec[i] = lhs[i] - rhs[i];
         }
