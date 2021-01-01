@@ -38,6 +38,10 @@ namespace Cashew {
         
         void fill(T value);
         void clear() { fill(0); };
+        
+        bool invertible() const;
+        Matrix<double, R, C> inverse() const;
+        Matrix<T, C, R> transpose() const;
 
         Vector<T, C> operator[](int i) const;
         Vector<T, C>& operator[](int i);
@@ -222,6 +226,23 @@ namespace Cashew {
     }
 
     CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C> operator*(const Matrix<T, R, C>& lhs, const Vector<T, C>& vec) {
+        Matrix<T, R, C> mat;
+        
+        
+        
+        return mat;
+    }
+
+    template<class T, size_t A, size_t B, size_t C>
+    Matrix<T, A, C> operator*(const Matrix<T, A, B>& lhs, const Matrix<T, B, C>& rhs) {
+        Matrix<T, A, C> mat;
+        
+        
+        return mat;
+    }
+
+    CASHEW_MAT_TEMPLATE
     Matrix<T, R, C> operator/(const Matrix<T, R, C>& lhs, double scalar) {
         Matrix<T, R, C> mat;
         
@@ -232,11 +253,6 @@ namespace Cashew {
         }
         
         return mat;
-    }
-
-    CASHEW_MAT_TEMPLATE
-    Matrix<T, R, C> operator/(double scalar, const Matrix<T, R, C>& rhs) {
-        return rhs / scalar;
     }
 
     CASHEW_MAT_TEMPLATE

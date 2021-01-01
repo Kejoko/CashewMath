@@ -22,7 +22,7 @@ int testVectorDivision() {
     }
     
     vec2 /= 10;
-    if (vec2 != (10 / result)) {
+    if (vec2 != (result / 10)) {
         std::cerr << "ERROR - Cashew::Vector /= failed on Vec2 /= 10.\n";
         return 2;
     }
@@ -50,7 +50,7 @@ int testMatrixDivision() {
     result[1][0] = 15;
     result[1][1] = 20;
     
-    mat2 = 2 / mat1;
+    mat2 = mat1 / 2;
     if (mat2  != result) {
         std::cerr << "ERROR - Cashew::Matrix / failed on Mat1 / 2.\n";
         return 3;
