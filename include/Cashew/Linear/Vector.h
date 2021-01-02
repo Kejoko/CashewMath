@@ -73,11 +73,11 @@ namespace Cashew {
             throw std::domain_error("Cannot create a Cashew::Vector of size less than 1.");
         }
         
-        for (int i = 0; i < S; i++) {
+        mSize = S;
+        
+        for (int i = 0; i < mSize; i++) {
             mData[i] = 0;
         }
-        
-        mSize = S;
     }
 
     CASHEW_VEC_TEMPLATE
@@ -88,7 +88,7 @@ namespace Cashew {
         
         mSize = S;
     
-        for (int i = 0; i < S; i++) {
+        for (int i = 0; i < mSize; i++) {
             mData[i] = value;
         }
     }
@@ -113,7 +113,7 @@ namespace Cashew {
     double Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::normSquared() const {
         // Change T to be floating point or unsigned / signed int based on type
         T squaredSum = 0;
-        for (int i = 0; i < S; i++) {
+        for (int i = 0; i < mSize; i++) {
             squaredSum += (mData[i] * mData[i]);
         }
         
@@ -124,7 +124,7 @@ namespace Cashew {
     double Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::norm() const {
         // Create implementation of sqrt approximation for better
         // performance and use in real time graphics.
-#ifdef CASHEW_REALTIME
+#if defined(CASHEW_REALTIME) || defined(CASHEW_FAST_SQRT)
         return sqrt(normSquared());
 #else
         return sqrt(normSquared());
@@ -134,14 +134,14 @@ namespace Cashew {
     CASHEW_VEC_TEMPLATE
     Vector<double, S> Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::normalized() const {
         Vector<double, S> vec;
-#ifdef CASHEW_REALTIME
+#if defined(CASHEW_REALTIME) || defined(CASHEW_FAST_SQRT)
         double invSqrt = fastInvSqrt(normSquared());
-        for (int i = 0; i < S; i++) {
+        for (int i = 0; i < mSize; i++) {
             vec[i] = mData[i] * invSqrt;
         }
 #else
         double mag = norm();
-        for (int i = 0; i < S; i++) {
+        for (int i = 0; i < mSize; i++) {
             vec[i] = mData[i] / mag;
         }
 #endif // CASHEW_REALTIME
