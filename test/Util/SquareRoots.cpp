@@ -6,14 +6,14 @@
 
 #include "Cashew/Util.h"
 
-int testFastInvSqrt() {
+int testfastInvSqrt64() {
     std::cout << "----- Fast Inverse Square Root -----\n";
     
     int square;
     int startVal = 1;
-    int iterations = 1000;
+    int iterations = 100;
+    double desiredError = 0.0005;
     double compound = 1.35;
-    double tolerance = 0.175;
     double fastIntAns, realIntAns;
     double fastDoubleAns, realDoubleAns;
     double intDifference, intError;
@@ -23,45 +23,55 @@ int testFastInvSqrt() {
     
     for (int i = startVal; i < startVal + iterations; i++) {
         square = i*i;
-        fastIntAns = Cashew::fastInvSqrt(square);
-        realIntAns = sqrt(square);
+        fastIntAns = Cashew::fastInvSqrt64(square);
+        realIntAns = 1 / sqrt(square);
         intDifference = abs(fastIntAns - realIntAns);
-        intError = intDifference / realIntAns;
+        intError = (intDifference / realIntAns) * 100;
         
-        intErrors.push_back(intError);
+        intErrors[i - startVal] = intError;
         
-        if (intError > tolerance) {
-            std::cout << "ERROR - " << i
+        if (intError > desiredError) {
+            std::cerr << "ERROR - " << i
                       << " fastInvSqrt of " << square
                       << " is not correct.\n"
                       << "% error : " << intError << '\n'
                       << fastIntAns << '\n'
-                      << realIntAns << '\n';
+                      << realIntAns << "\n\n";
             return 1;
         }
         
-        
-        
-        
-        
-        compound *= compound;
-        fastDoubleAns = Cashew::fastInvSqrt(compound);
-        realDoubleAns = sqrt(compound);
+        compound *= 30;
+        fastDoubleAns = Cashew::fastInvSqrt64(compound);
+        realDoubleAns = 1 / sqrt(compound);
         doubleDifference = abs(fastDoubleAns - realDoubleAns);
-        doubleError = doubleDifference / realDoubleAns;
+        doubleError = (doubleDifference / realDoubleAns) * 100;
         
-        doubleErrors.push_back(doubleError);
+        doubleErrors[i - startVal] = doubleError;
         
-        if (doubleError > tolerance) {
-            std::cout << "ERROR - " << i
+        if (doubleError > desiredError) {
+            std::cerr << "ERROR - " << i
                       << " fastInvSqrt of " << compound
                       << " is not correct.\n"
                       << "% error : " << doubleError << '\n'
                       << fastDoubleAns << '\n'
-                      << realDoubleAns << '\n';
+                      << realDoubleAns << "\n\n";
             return 2;
         }
     }
+    
+    double intErrorSum = 0;
+    double doubleErrorSum = 0;
+    for (int i = 0; i < iterations; i++) {
+        intErrorSum = intErrorSum + intErrors[i];
+        doubleErrorSum = doubleErrorSum + doubleErrors[i];
+    }
+    
+    double avgIntError = intErrorSum / iterations;
+    double avgDoubleError = doubleErrorSum / iterations;
+    std::cout << "Integer average error % : "
+              << avgIntError << '\n';
+    std::cout << "Double  average error % : "
+              << avgDoubleError << '\n';
     
     return 0;
 }
@@ -73,7 +83,7 @@ int testFastInvSqrt() {
 int main() {
     int success = 0;
     
-    success = testFastInvSqrt();
+    success = testfastInvSqrt64();
     if (success != 0) return success;
     
     std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";
