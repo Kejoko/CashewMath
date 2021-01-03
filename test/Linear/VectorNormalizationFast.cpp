@@ -56,45 +56,6 @@ int testVectorNorm() {
 int testVectorNormalization() {
     std::cout << "----- Vector normalization -----\n";
     
-    Cashew::Vector<int, 2> vec1;
-    vec1[0] = 3;
-    vec1[1] = 4;
-    Cashew::Vector<double, 2> ans1;
-    ans1[0] = 3.0/5.0;
-    ans1[1] = 4.0/5.0;
-    Cashew::Vector<double, 2> res1 = vec1.normalized();
-    if (res1 != ans1) {
-        std::cerr << "ERROR - Vec1 " << vec1 << " normalized did not give " << ans1 << ".\n";
-        return 5;
-    } else if (res1.norm() != 1) {
-        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n";
-        return 6;
-    }
-    
-    Cashew::Vector<long long, 70> vec2;
-    Cashew::Vector<double, 70> ans2;
-    Cashew::Vector<double, 70> res2 = vec2.normalized();
-    if (res2 != ans2) {
-        std::cerr << "ERROR - A 0 vector normalized did not give a 0 vector.\n";
-        return 7;
-    } else if (res2.norm() != 1) {
-        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n";
-        return 8;
-    }
-    
-    Cashew::Vector<bool, 10> vec3;
-    vec3[7] = true;
-    Cashew::Vector<double, 10> ans3;
-    ans3[7] = 1;
-    Cashew::Vector<double, 10> res3 = vec3.normalized();
-    if (res3 != ans3) {
-        std::cerr << "ERROR - A unit vector normalized did not give a unit vector.\n";
-        return 9;
-    } else if (res3.norm() != 1) {
-        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n";
-        return 10;
-    }
-    
     std::cout << '\n';
     return 0;
 }
