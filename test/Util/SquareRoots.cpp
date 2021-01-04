@@ -27,7 +27,7 @@ int sqrtTester(double testFuncDbl(double), double testFuncInt(int), double ansFu
         } else {
             fastIntAns = testFuncDbl(square);
         }
-        realIntAns = 1 / sqrt(square);
+        realIntAns = ansFunc(square);
         intDifference = abs(fastIntAns - realIntAns);
         intError = (intDifference / realIntAns) * 100;
         
@@ -35,7 +35,7 @@ int sqrtTester(double testFuncDbl(double), double testFuncInt(int), double ansFu
         
         if (intError > desiredError) {
             std::cerr << "ERROR - " << i
-                      << " fastInvSqrt of " << square
+                      << " Result of " << square
                       << " is not correct.\n"
                       << "% error : " << intError << '\n'
                       << fastIntAns << '\n'
@@ -53,7 +53,7 @@ int sqrtTester(double testFuncDbl(double), double testFuncInt(int), double ansFu
         
         if (doubleError > desiredError) {
             std::cerr << "ERROR - " << i
-                      << " fastInvSqrt of " << compound
+                      << " Result of " << compound
                       << " is not correct.\n"
                       << "% error : " << doubleError << '\n'
                       << fastDoubleAns << '\n'
@@ -86,15 +86,15 @@ int sqrtTester(double testFuncDbl(double), double testFuncInt(int), double ansFu
 int testFastSqrt() {
     std::cout << "----- Fast Square Root -----\n";
     
-    //    return sqrtTester(0.0005);
-        return 0;
+//    return sqrtTester(Cashew::fastSqrt, Cashew::fastSqrt, sqrt, 0.005);
+    return sqrtTester(Cashew::fastSqrt, nullptr, sqrt, 0.005);
 }
 
 
 
 
 
-int testfastInvSqrt64() {
+int testfastInvSqrt() {
     std::cout << "----- Fast Inverse Square Root -----\n";
     
     auto ansFunc = [](double val) { return (1 / sqrt(val)); };
@@ -112,7 +112,10 @@ int testfastInvSqrt64() {
 int main() {
     int success = 0;
     
-    success = testfastInvSqrt64();
+    success = testFastSqrt();
+    if (success != 0) return success;
+    
+    success = testfastInvSqrt();
     if (success != 0) return success;
     
     std::cout << "( ͡` ᴗ ͡´)  <(success!)\n";

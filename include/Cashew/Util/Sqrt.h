@@ -4,27 +4,17 @@
 #ifndef CASHEW_SQRT_H_INCLUDE
 #define CASHEW_SQRT_H_INCLUDE
 
+#include <cmath>
 #include <cstdint>
 
 namespace Cashew {
-
-    double fastSqrt(int value) {
-        return 0;
-    }
-
-    double fastSqrt(double value) {
-        return 0;
-    }
 
     // This fucking manic algorithm was taken from Quake
     // The ouble precision version from internet
     // This shit is absolute magic, my man.
     // https://en.wikipedia.org/wiki/Fast_inverse_square_root#Algorithm
     // https://cs.uwaterloo.ca/~m32rober/rsqrt.pdf
-    double fastInvSqrt(double value) {
-        double threehalves = 1.5;
-        
-        double y = value;
+    double fastInvSqrt(double y) {
         double x2 = 0.5 * y;
         
         // Hack to bitwise copy value to an int for bit manipulation later
@@ -37,10 +27,15 @@ namespace Cashew {
         y = *(double*) &i;
         
         // 2 Newton's method iterations. 2nd iteration is not necessary
-        y = y * (threehalves - (x2 * y * y));
-        y = y * (threehalves - (x2 * y * y));
+        y = y * (1.5 - (x2 * y * y));
+        y = y * (1.5 - (x2 * y * y));
         
         return y;
+    }
+
+    double fastSqrt(double value) {
+        
+        return sqrt(value);
     }
 
 }
