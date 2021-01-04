@@ -6,13 +6,12 @@
 
 #include "Cashew/Util.h"
 
-int testfastInvSqrt64() {
-    std::cout << "----- Fast Inverse Square Root -----\n";
-    
+
+int sqrtTester(double testFuncDbl(double), double testFuncInt(int), double ansFunc(double), double desiredErr) {
     int square;
     int startVal = 1;
     int iterations = 100;
-    double desiredError = 0.0005;
+    double desiredError = desiredErr;
     double compound = 1.35;
     double fastIntAns, realIntAns;
     double fastDoubleAns, realDoubleAns;
@@ -23,7 +22,11 @@ int testfastInvSqrt64() {
     
     for (int i = startVal; i < startVal + iterations; i++) {
         square = i*i;
-        fastIntAns = Cashew::fastInvSqrt64(square);
+        if (testFuncInt != nullptr) {
+            fastIntAns = testFuncInt(square);
+        } else {
+            fastIntAns = testFuncDbl(square);
+        }
         realIntAns = 1 / sqrt(square);
         intDifference = abs(fastIntAns - realIntAns);
         intError = (intDifference / realIntAns) * 100;
@@ -41,8 +44,8 @@ int testfastInvSqrt64() {
         }
         
         compound *= 30;
-        fastDoubleAns = Cashew::fastInvSqrt64(compound);
-        realDoubleAns = 1 / sqrt(compound);
+        fastDoubleAns = testFuncDbl(compound);
+        realDoubleAns = ansFunc(compound);
         doubleDifference = abs(fastDoubleAns - realDoubleAns);
         doubleError = (doubleDifference / realDoubleAns) * 100;
         
@@ -74,6 +77,32 @@ int testfastInvSqrt64() {
               << avgDoubleError << '\n';
     
     return 0;
+}
+
+
+
+
+
+int testFastSqrt() {
+    std::cout << "----- Fast Square Root -----\n";
+    
+    //    return sqrtTester(0.0005);
+        return 0;
+}
+
+
+
+
+
+int testfastInvSqrt64() {
+    std::cout << "----- Fast Inverse Square Root -----\n";
+    
+    auto ansFunc = [](double val) { return (1 / sqrt(val)); };
+    
+    return sqrtTester(Cashew::fastInvSqrt,
+                      nullptr,
+                      ansFunc,
+                      0.005);
 }
 
 

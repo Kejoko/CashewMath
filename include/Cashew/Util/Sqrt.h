@@ -1,19 +1,27 @@
 // Keegan Kochis
 // 2021 January 1st
 
-#ifndef CASHEW_FASTINVSQRT_H_INCLUDE
-#define CASHEW_FASTINVSQRT_H_INCLUDE
+#ifndef CASHEW_SQRT_H_INCLUDE
+#define CASHEW_SQRT_H_INCLUDE
 
 #include <cstdint>
 
 namespace Cashew {
 
-    // This fucking manic algorithm taken from Quake
-    // Double precision version from internet
+    double fastSqrt(int value) {
+        return 0;
+    }
+
+    double fastSqrt(double value) {
+        return 0;
+    }
+
+    // This fucking manic algorithm was taken from Quake
+    // The ouble precision version from internet
     // This shit is absolute magic, my man.
     // https://en.wikipedia.org/wiki/Fast_inverse_square_root#Algorithm
     // https://cs.uwaterloo.ca/~m32rober/rsqrt.pdf
-    double fastInvSqrt64(double value) {
+    double fastInvSqrt(double value) {
         double threehalves = 1.5;
         
         double y = value;
@@ -37,4 +45,4 @@ namespace Cashew {
 
 }
 
-#endif // CASHEW_FASTINVSQRT_H_INCLUDE
+#endif // CASHEW_SQRT_H_INCLUDE

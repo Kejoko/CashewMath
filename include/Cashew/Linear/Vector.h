@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <vector>
 
-#include "Cashew/Util/FastInvSqrt.h"
+#include "Cashew/Util/Sqrt.h"
 
 #define CASHEW_VEC_TEMPLATE template<class T, size_t S>
 #define CASHEW_VEC_EXT_TEMPLATE_ARGS T, S, ArithmeticPolicy<T>, SizePolicy<S>
