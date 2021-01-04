@@ -135,7 +135,7 @@ namespace Cashew {
     Vector<double, S> Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::normalized() const {
         Vector<double, S> vec;
 #if defined(CASHEW_REALTIME) || defined(CASHEW_FAST_SQRT)
-        double invSqrt = fastInvSqrt64(normSquared());
+        double invSqrt = fastInvSqrt(normSquared());
         for (int i = 0; i < mSize; i++) {
             vec[i] = mData[i] * invSqrt;
         }
