@@ -11,6 +11,7 @@ create_unit_test(SubtractionOperators SubtractionOperators.cpp)
 
 create_unit_test(VectorDotCross VectorDotCross.cpp)
 create_unit_test(VectorNormalization VectorNormalization.cpp)
+create_unit_test(VectorNormalizationFast VectorNormalizationFast.cpp)
 
 create_unit_test(MatrixTranspose MatrixTranspose.cpp)
 create_unit_test(MatrixInverse MatrixInverse.cpp)
