@@ -121,11 +121,10 @@ namespace Cashew {
     CASHEW_VEC_TEMPLATE
     double Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::norm() const {
 #if defined(CASHEW_REALTIME) || defined(CASHEW_FAST_SQRT)
-        return sqrt(normSquared());
-//        return fastSart(normSquared());
+        return fastSqrt(normSquared());
 #else
         return sqrt(normSquared());
-#endif // CASHEW_REALTIME
+#endif // CASHEW_REALTIME || CASHEW_FAST_SQRT
     }
 
     CASHEW_VEC_TEMPLATE
@@ -146,14 +145,9 @@ namespace Cashew {
         for (int i = 0; i < mSize; i++) {
             vec[i] = mData[i] / mag;
         }
-#endif // CASHEW_REALTIME
+#endif // CASHEW_REALTIME || CASHEW_FAST_SQRT
         return vec;
     }
-
-//    CASHEW_VEC_TEMPLATE
-//    void Vector<T, S, FloatingPolicy<T>, SizePolicy<S>>::normalize() {
-//
-//    }
 
     //
     // Operator overloads
