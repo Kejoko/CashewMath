@@ -8,11 +8,13 @@
 int testVectorNorm() {
     std::cout << "----- Vector norm -----\n";
     
+    double desiredError = 0.001;
+    
     Cashew::Vector<int, 2> vec1;
     vec1[0] = 3;
     vec1[1] = 4;
     double result1 = vec1.norm();
-    if (result1 != 5) {
+    if (abs(result1 - 5) > desiredError) {
         std::cerr << "ERROR - Vec1 norm " << result1 << " is not 5.\n";
         return 1;
     } else {
@@ -22,7 +24,7 @@ int testVectorNorm() {
     Cashew::Vector<long long, 80> vec2;
     vec2[67] = -144;
     double result2 = vec2.norm();
-    if (result2 != 144) {
+    if (abs(result2 - 144) > desiredError) {
         std::cerr << "ERROR - Vec2 norm " << result2 << " is not 144.\n";
         return 2;
     } else {
@@ -32,7 +34,7 @@ int testVectorNorm() {
     Cashew::Vector<bool, 1> vec3;
     vec3[0] = true;
     double result3 = vec3.norm();
-    if (result3 != 1) {
+    if (abs(result3 - 1) > desiredError) {
         std::cerr << "ERROR - Vec3 norm " << result3 << " is not 1.\n";
         return 3;
     } else {
@@ -41,7 +43,7 @@ int testVectorNorm() {
     
     Cashew::Vector<char, 8> vec4;
     double result4 = vec4.norm();
-    if (result4 != 0) {
+    if (abs(result4 - 0) > desiredError) {
         std::cerr << "ERROR - Vec4 norm " << result4 << " is not 0.\n";
         return 4;
     } else {
@@ -59,6 +61,8 @@ int testVectorNorm() {
 int testVectorNormalization() {
     std::cout << "----- Vector normalization -----\n";
     
+    double desiredError = 0.001;
+    
     Cashew::Vector<int, 2> vec1;
     vec1[0] = 3;
     vec1[1] = 4;
@@ -66,22 +70,35 @@ int testVectorNormalization() {
     ans1[0] = 3.0/5.0;
     ans1[1] = 4.0/5.0;
     Cashew::Vector<double, 2> res1 = vec1.normalized();
-    if (res1 != ans1) {
-        std::cerr << "ERROR - Vec1 " << vec1 << " normalized did not give " << ans1 << ".\n";
-        return 5;
-    } else if (res1.norm() != 1) {
-        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n";
+    
+    for (int i = 0; i < res1.size(); i++) {
+        if (abs(res1[i] - ans1[i]) > desiredError) {
+            std::cerr << "ERROR - Vec1 " << vec1 << " normalized did not give " << ans1 << ".\n";
+            return 5;
+        }
+    }
+    
+    if (abs(res1.norm() - 1) > desiredError) {
+        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n"
+                  << res1 << '\n'
+                  << res1.norm() << '\n';
         return 6;
     }
     
     Cashew::Vector<long long, 70> vec2;
     Cashew::Vector<double, 70> ans2;
     Cashew::Vector<double, 70> res2 = vec2.normalized();
-    if (res2 != ans2) {
-        std::cerr << "ERROR - A 0 vector normalized did not give a 0 vector.\n";
-        return 7;
-    } else if (res2.norm() != 1) {
-        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n";
+    
+    for (int i = 0; i < res2.size(); i++) {
+        if (abs(res2[i] - ans2[i]) > desiredError) {
+            std::cerr << "ERROR - A 0 vector normalized did not give a 0 vector.\n";
+            return 7;
+        }
+    }
+    
+    if (res2.norm() != 0) {
+        std::cerr << "ERROR - Normalized 0 vector does not give norm of 0.\n"
+                  << res2.norm() << '\n';
         return 8;
     }
     
@@ -90,11 +107,18 @@ int testVectorNormalization() {
     Cashew::Vector<double, 10> ans3;
     ans3[7] = 1;
     Cashew::Vector<double, 10> res3 = vec3.normalized();
-    if (res3 != ans3) {
-        std::cerr << "ERROR - A unit vector normalized did not give a unit vector.\n";
-        return 9;
-    } else if (res3.norm() != 1) {
-        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n";
+    
+    for (int i = 0; i < res3.size(); i++) {
+        if (abs(res3[i] - ans3[i]) > desiredError) {
+            std::cerr << "ERROR - A unit vector normalized did not give a unit vector.\n";
+            return 9;
+        }
+    }
+    
+    if (abs(res3.norm() - 1) > desiredError) {
+        std::cerr << "ERROR - Normalized vector does not give norm of 1.\n"
+                  << res3 << '\n'
+                  << res3.norm() << '\n';;
         return 10;
     }
     

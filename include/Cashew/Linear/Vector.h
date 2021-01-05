@@ -69,10 +69,6 @@ namespace Cashew {
 
     CASHEW_VEC_TEMPLATE
     Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::Vector() {
-        if (S <= 0) {
-            throw std::domain_error("Cannot create a Cashew::Vector of size less than 1.");
-        }
-        
         mSize = S;
         
         for (int i = 0; i < mSize; i++) {
@@ -82,10 +78,6 @@ namespace Cashew {
 
     CASHEW_VEC_TEMPLATE
     Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::Vector(T value) {
-        if (S <= 0) {
-            throw std::domain_error("Cannot create a Cashew::Vector of size less than 1.");
-        }
-        
         mSize = S;
     
         for (int i = 0; i < mSize; i++) {
@@ -122,10 +114,9 @@ namespace Cashew {
 
     CASHEW_VEC_TEMPLATE
     double Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::norm() const {
-        // Create implementation of sqrt approximation for better
-        // performance and use in real time graphics.
 #if defined(CASHEW_REALTIME) || defined(CASHEW_FAST_SQRT)
         return sqrt(normSquared());
+//        return fastSart(normSquared());
 #else
         return sqrt(normSquared());
 #endif // CASHEW_REALTIME
@@ -141,6 +132,11 @@ namespace Cashew {
         }
 #else
         double mag = norm();
+        
+        if (mag == 0) {
+            return vec;
+        }
+        
         for (int i = 0; i < mSize; i++) {
             vec[i] = mData[i] / mag;
         }
