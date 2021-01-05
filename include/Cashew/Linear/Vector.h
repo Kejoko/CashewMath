@@ -21,6 +21,9 @@ namespace Cashew {
     template<class T>
     using ArithmeticPolicy = typename std::enable_if<std::is_arithmetic<T>::value>::type;
 
+    template<class T>
+    using FloatingPolicy = typename std::enable_if<std::is_floating_point<T>::value>::type;
+
     template<size_t S>
     using SizePolicy = typename std::enable_if<S >= 1>::type;
 
@@ -42,7 +45,10 @@ namespace Cashew {
         double norm() const;
         double magnitude() const { return norm(); }
         Vector<double, S> normalized() const;
-        void normalize();
+        
+        template<class U = T>
+        FloatingPolicy<U>
+        normalize() { *this = normalized(); }
         
         double dot(const Vector<T, S>& rhs) const;
         double cross(const Vector<T, S>& rhs) const;
@@ -143,6 +149,11 @@ namespace Cashew {
 #endif // CASHEW_REALTIME
         return vec;
     }
+
+//    CASHEW_VEC_TEMPLATE
+//    void Vector<T, S, FloatingPolicy<T>, SizePolicy<S>>::normalize() {
+//
+//    }
 
     //
     // Operator overloads

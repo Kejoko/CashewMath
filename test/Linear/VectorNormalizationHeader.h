@@ -122,6 +122,30 @@ int testVectorNormalization() {
         return 10;
     }
     
+    Cashew::Vec3d vec4;
+    vec4[0] = 1;
+    vec4[1] = 1;
+    vec4[2] = 1;
+    vec4.normalize();
+    Cashew::Vec3d ans4;
+    ans4[0] = 1 / sqrt(3);
+    ans4[1] = 1 / sqrt(3);
+    ans4[2] = 1 / sqrt(3);
+    
+    for (int i = 0; i < vec4.size(); i++) {
+        if (abs(vec4[i] - ans4[i]) > desiredError) {
+            std::cerr << "ERROR - Normalized vector did not give unit vector.\n"
+                      << "Vec4 : " << vec4 << '\n'
+                      << "Ans4 : " << ans4 << '\n';
+            return 11;
+        }
+    }
+    
+    if (abs(vec4.norm() - 1) > desiredError) {
+        std::cerr << "ERROR - Norm of " << vec4 << " is not 1.\n";
+        return 12;
+    }
+    
     std::cout << '\n';
     return 0;
 }
