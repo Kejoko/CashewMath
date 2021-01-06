@@ -149,6 +149,17 @@ namespace Cashew {
         return vec;
     }
 
+    CASHEW_VEC_TEMPLATE
+    double Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::dot(const Vector<T, S>& rhs) const {
+        double sum = 0;
+        
+        for (int i = 0; i < mSize; i++) {
+            sum += mData[i] * rhs[i];
+        }
+        
+        return sum;
+    }
+
     //
     // Operator overloads
     //
@@ -286,6 +297,15 @@ namespace Cashew {
     
         return os;
     }
+
+    //
+    // Special Types
+    //
+
+    typedef Vector<double, 3> Vec3d;
+    typedef Vector<double, 4> Vec4d;
+
+    
 }
 
 #endif // CASHEW_VECTOR_H_INCLUDE
