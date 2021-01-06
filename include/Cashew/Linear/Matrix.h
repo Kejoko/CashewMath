@@ -39,6 +39,7 @@ namespace Cashew {
         void fill(T value);
         void clear() { fill(0); };
         
+        T determinant() const;
         bool invertible() const;
         Matrix<double, R, C> inverse() const;
         Matrix<T, C, R> transpose() const;
@@ -112,6 +113,12 @@ namespace Cashew {
                                     " is out of bounds for Cashew::Matrix with " +
                                     std::to_string(mRows) + " rows.");
         }
+    }
+
+    CASHEW_MAT_TEMPLATE
+    T Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::determinant() const {
+        
+        return 0;
     }
 
     CASHEW_MAT_TEMPLATE
