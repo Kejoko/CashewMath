@@ -61,6 +61,56 @@ int testVectorDotProduct() {
 int testVectorCrossProduct() {
     std::cout << "----- Vector cross product -----\n";
     
+    Cashew::Vec3d vec1a;
+    vec1a[0] = 3;
+    vec1a[1] = -3;
+    vec1a[2] = 1;
+    Cashew::Vec3d vec1b;
+    vec1b[0] = 4;
+    vec1b[1] = 9;
+    vec1b[2] = 2;
+    Cashew::Vec3d res1;
+    res1[0] = -15;
+    res1[1] = -2;
+    res1[2] = 39;
+    
+    if (vec1a.cross(vec1b) != res1) {
+        std::cerr << "ERROR - " << vec1a
+                  << " x " << vec1b
+                  << " did not give " << res1 << ".\n";
+        return 4;
+    }
+    
+    Cashew::Vec3d vec2a;
+    vec1a[0] = 3;
+    vec1a[1] = -3;
+    vec1a[2] = 1;
+    Cashew::Vec3d vec2b;
+    vec1b[0] = -12;
+    vec1b[1] = 12;
+    vec1b[2] = -4;
+    Cashew::Vec3d res2;
+    res1[0] = 0;
+    res1[1] = 0;
+    res1[2] = 0;
+    
+    if (vec2a.cross(vec2b) != res2) {
+        std::cerr << "ERROR - " << vec2a
+                  << " x " << vec2b
+                  << " did not give " << res2 << ".\n";
+        return 5;
+    }
+    
+//    Cashew::Vector<int, 5> vec5a;
+//    Cashew::Vector<int, 5> vec5b;
+//    try {
+//        Cashew::Vector<int, 5> res5 = vec5a.cross(vec5b);
+//        std::cerr << "ERROR - Cross product should not be defined for Vectors not of length 3.\n";
+//        return 6;
+//    } catch (const std::exception& e) {
+//        std::cout << "Success - Cross product not working for size 5 Vector.\n";
+//    }
+
     return 0;
 }
 
