@@ -25,6 +25,9 @@ namespace Cashew {
     using FloatingPolicy = typename std::enable_if<std::is_floating_point<T>::value>::type;
 
     template<size_t S>
+    using CrossPolicy = typename std::enable_if<S == 3>::type;
+
+    template<size_t S>
     using SizePolicy = typename std::enable_if<S >= 1>::type;
 
     template<class T, size_t S, typename TypeEnable = void, typename SizeEnable = void>
@@ -51,7 +54,7 @@ namespace Cashew {
         normalize() { *this = normalized(); }
         
         double dot(const Vector<T, S>& rhs) const;
-        double cross(const Vector<T, S>& rhs) const;
+        Vector<T, S> cross(const Vector<T, S>& rhs) const;
 
         T operator[](int i) const;
         T& operator[](int i);
@@ -146,6 +149,32 @@ namespace Cashew {
             vec[i] = mData[i] / mag;
         }
 #endif // CASHEW_REALTIME || CASHEW_FAST_SQRT
+        return vec;
+    }
+
+    CASHEW_VEC_TEMPLATE
+    double Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::dot(const Vector<T, S>& rhs) const {
+        double sum = 0;
+        
+        for (int i = 0; i < mSize; i++) {
+            sum += mData[i] * rhs[i];
+        }
+        
+        return sum;
+    }
+
+    CASHEW_VEC_TEMPLATE
+    Vector<T, S> Vector<CASHEW_VEC_EXT_TEMPLATE_ARGS>::cross(const Vector<T, S>& rhs) const {
+        if (mSize != 3) {
+            throw std::domain_error("Cross product is only defined for Vectors of size 3.");
+        }
+        
+        Vector<T, 3> vec;
+
+        vec[0] = mData[1] * rhs[2] - mData[2] * rhs[1];
+        vec[1] = mData[2] * rhs[0] - mData[0] * rhs[2];
+        vec[2] = mData[0] * rhs[1] - mData[1] * rhs[0];
+
         return vec;
     }
 
@@ -286,6 +315,14 @@ namespace Cashew {
     
         return os;
     }
+
+    //
+    // Special Types
+    //
+
+    typedef Vector<double, 3> Vec3d;
+    typedef Vector<double, 4> Vec4d;
+
 }
 
 #endif // CASHEW_VECTOR_H_INCLUDE

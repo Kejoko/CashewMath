@@ -318,6 +318,13 @@ namespace Cashew {
         }
         return os;
     }
+
+    //
+    // Special Types
+    //
+
+    typedef Matrix<double, 3, 3> Mat3d;
+    typedef Matrix<double, 4, 4> Mat4d;
 }
 
 
