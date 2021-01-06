@@ -114,6 +114,25 @@ namespace Cashew {
         }
     }
 
+    CASHEW_MAT_TEMPLATE
+    bool Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::invertible() const {
+        return false;
+    }
+
+    CASHEW_MAT_TEMPLATE
+    Matrix<double, R, C> Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::inverse() const {
+        Matrix<double, R, C> mat;
+        
+        return mat;
+    }
+
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, C, R> Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::transpose() const {
+        Matrix<T, C, R> mat;
+        
+        return mat;
+    }
+
     //
     // Operator overloads
     //
