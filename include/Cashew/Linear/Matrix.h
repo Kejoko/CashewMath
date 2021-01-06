@@ -8,6 +8,7 @@
 
 #include <iomanip>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 #include <typeinfo>
 #include <type_traits>
@@ -42,6 +43,11 @@ namespace Cashew {
         T determinant() const;
         bool invertible() const;
         Matrix<double, R, C> inverse() const;
+        
+        template<class U = T>
+        FloatingPolicy<U>
+        invert() { *this = inverse(); };
+        
         Matrix<T, C, R> transpose() const;
 
         Vector<T, C> operator[](int i) const;
@@ -59,6 +65,8 @@ namespace Cashew {
         Vector<T, C> mData[R];
         
         void validateRow(int r) const;
+        
+        T determinantHelper(int n) const;
     };
 
     //
@@ -117,12 +125,26 @@ namespace Cashew {
 
     CASHEW_MAT_TEMPLATE
     T Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::determinant() const {
+        return determinantHelper(mRows);
+    }
+
+    CASHEW_MAT_TEMPLATE
+    T Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::determinantHelper(int n) const {
+        if (mRows != mCols) {
+            throw std::domain_error("Cannot take determinant of a non square matrix.");
+        }
+        
+        
         
         return 0;
     }
 
     CASHEW_MAT_TEMPLATE
     bool Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::invertible() const {
+        if (determinant() != 0) {
+            return true;
+        }
+        
         return false;
     }
 
