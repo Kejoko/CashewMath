@@ -57,6 +57,8 @@ namespace Cashew {
         Matrix<T, R, C>& operator+=(const Matrix<T, R, C>& rhs);
         Matrix<T, R, C>& operator-=(const Matrix<T, R, C>& rhs);
         Matrix<T, R, C>& operator*=(double scalar);
+        Matrix<T, R, C>& operator*=(const Vector<T, C>& rhs);
+        Matrix<T, R, C>& operator*=(const Matrix<T, C, C>& rhs);
         Matrix<T, R, C>& operator/=(double scalar);
         
       private:
@@ -282,12 +284,25 @@ namespace Cashew {
         return mat;
     }
 
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator*=(const Vector<T, C>& vec) {
+        *this = *this * vec;
+        return *this;
+    }
+
     template<class T, size_t A, size_t B, size_t C>
     Matrix<T, A, C> operator*(const Matrix<T, A, B>& lhs, const Matrix<T, B, C>& rhs) {
         Matrix<T, A, C> mat;
         
         
+        
         return mat;
+    }
+
+    CASHEW_MAT_TEMPLATE
+    Matrix<T, R, C>& Matrix<CASHEW_MAT_EXT_TEMPLATE_ARGS>::operator*=(const Matrix<T, C, C>& rhs) {
+        *this = *this * rhs;
+        return *this;
     }
 
     CASHEW_MAT_TEMPLATE
